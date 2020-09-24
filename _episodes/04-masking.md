@@ -75,7 +75,6 @@ plt.colorbar()
 That's better! We can see that the mask data are 1 for ocean and 0 for land. We can use `xarray.where` to mask the data to only over the ocean.
 
 ~~~
-{: .language-python}
 da_ocean=ds_data['sst'].mean('time').where(ds_mask['mask']==1)
 da_ocean
 plt.contourf(da_ocean,cmap='coolwarm')
