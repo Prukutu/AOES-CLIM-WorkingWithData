@@ -64,7 +64,7 @@
 	<![endif]-->
 
   <title>
-  Getting and Reading Data for Today's Class &ndash; Working with Climate Data
+  Masking &ndash; Working with Climate Data
   </title>  
 
   </head>
@@ -188,7 +188,7 @@
 	
         <li><a href="../LICENSE.html">License</a></li>
 	
-	<li><a href="/edit//_episodes/01-intro.md" data-checker-ignore>Improve this page <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></li>
+	<li><a href="/edit//_episodes/04-masking.md" data-checker-ignore>Improve this page <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></li>
 	
       </ul>
       <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
@@ -244,7 +244,7 @@
   <div class="col-xs-1">
     <h3 class="text-left">
       
-      <a href="../"><span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span><span class="sr-only">lesson home</span></a>
+      <a href="../03-aggregating/index.html"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span><span class="sr-only">previous episode</span></a>
       
     </h3>
   </div>
@@ -256,7 +256,7 @@
   <div class="col-xs-1">
     <h3 class="text-right">
       
-      <a href="../02-subsetting/index.html"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span><span class="sr-only">next episode</span></a>
+      <a href="../"><span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span><span class="sr-only">lesson home</span></a>
       
     </h3>
   </div>
@@ -267,7 +267,7 @@
   <div class="col-md-1">
   </div>
   <div class="col-md-10">
-    <h1 class="maintitle">Getting and Reading Data for Today's Class</h1>
+    <h1 class="maintitle">Masking</h1>
   </div>
   <div class="col-md-1">
   </div>
@@ -297,10 +297,7 @@
       <strong>Questions</strong>
       <ul>
 	
-	<li><p>How do I find and read in the data for today’s class?</p>
-</li>
-	
-	<li><p>What is an xarray.Dataset?</p>
+	<li><p>How to I maskout land or ocean?</p>
 </li>
 	
       </ul>
@@ -323,19 +320,13 @@
 
 </blockquote>
 
-<h3 id="getting-started">Getting Started</h3>
+<p>Sometimes we want to maskout data based on a land/sea mask that is provided.</p>
 
-<ol>
-  <li>
-    <p>Launch a Jupyter notebook on a COLA server.  As a reminder, its best to launch it from your home directory, then you can get to any other directory from within your notebook.</p>
-  </li>
-  <li>
-    <p>Create a new notebook and save it as Subsetting.</p>
-  </li>
-  <li>
-    <p>Import the standard set of packages we use:</p>
-  </li>
-</ol>
+<h2 id="first-steps">First Steps</h2>
+
+<p>Create a new notebook and save it as Masking.</p>
+
+<p>Import the standard set of packages we use:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="n">xr</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
@@ -343,121 +334,50 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 </code></pre></div></div>
 
-<h3 id="find-our-dataset">Find our Dataset</h3>
+<p>Read in these two datasets:</p>
 
-<p>Today we will work with datasets that are on the COLA servers and findable using the COLA Data Catalog.
-We will start by using monthly Sea Surface Temperature (SST) data.</p>
-
-<p>Go to the <a href="https://kpegion.github.io/COLA-DATASETS-CATALOG/">COLA Data Catalog</a></p>
-
-<p>Browse the main catalog and follow the links to <code class="language-plaintext highlighter-rouge">obs-&gt;gridded-&gt;ocn-&gt;sst-&gt;oisstv2_monthly</code></p>
-
-<p>Let’s take a look at our dataset and what we can learn about it from the catalog:</p>
-<ul>
-  <li>It is 1deg x 1deg</li>
-  <li>Latitudes go from 89.5N to 89.5S – that seems backwards</li>
-  <li>It goes from Dec 1981 to Apr 2020</li>
-  <li>It was last updated on the COLA Servers on Jun 25, 2020</li>
-  <li>It is located in the ‘/shared/obs/gridded/OISSTv2` directory</li>
-</ul>
-
-<p>Now we will take a look at the data on COLA by opening a terminal in our Jupyter Notebook and looking in the directory wehere the data are located:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> /shared/obs/gridded/OISSTv2
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data_file</span><span class="o">=</span><span class="s">'/shared/obs/gridded/OISSTv2/monthly/sst.mnmean.nc'</span>
+<span class="n">ds_data</span><span class="o">=</span><span class="n">xr</span><span class="p">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
+<span class="n">ds_data</span>
 </code></pre></div></div>
 
-<div class="language-plaintext output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lmask  monthly  weekly
+<p>This is the original data file we read in.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mask_file</span><span class="o">=</span><span class="s">'/shared/obs/gridded/OISSTv2/lmask/lsmask.nc'</span>
+<span class="n">ds_mask</span><span class="o">=</span><span class="n">xr</span><span class="p">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">mask_file</span><span class="p">)</span>
+<span class="n">ds_mask</span>
 </code></pre></div></div>
 
-<p>Since we are looking for monthly data, let’s look in the monthly sub-directory.  Remember, you can use the <code class="language-plaintext highlighter-rouge">up-arrow</code> to avoid having to re-type:</p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> /shared/obs/gridded/OISSTv2/monthly
+<p>Let’s look at this file.  It contains a lat and lon grid that is the same as our SST data and a single time.
+The data are 0’s and 1’s.  Plot it.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">ds_mask</span><span class="p">[</span><span class="s">'mask'</span><span class="p">])</span>
 </code></pre></div></div>
 
-<div class="language-plaintext output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sst.mnmean.nc
+<p>What does this error mean? 
+The data has a single time dimension so it appears as 3-D to <code class="language-plaintext highlighter-rouge">contourf</code>.  We can drop single dimensions using <code class="language-plaintext highlighter-rouge">squeeze</code></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds_mask</span><span class="o">=</span><span class="n">ds_mask</span><span class="p">.</span><span class="n">squeeze</span><span class="p">()</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">ds_mask</span><span class="p">[</span><span class="s">'mask'</span><span class="p">])</span>
 </code></pre></div></div>
 
-<blockquote class="challenge">
-  <h2 id="quick-look-at-metadata-for-our-dataset">Quick look at Metadata for our Dataset</h2>
+<p>The latitudes are upside down.  Let’s fix that like we did before. In this case, we will
+fix it for the mask and the data.</p>
 
-  <p>What command can you use to look at the metadata for our dataset and confirm that it
-matches the COLA Data Catalog?</p>
-
-  <blockquote class="solution">
-    <h2 id="solution">Solution</h2>
-    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ncdump <span class="nt">-h</span> /shared/obs/gridded/OISSTv2/monthly/sst.mnmean.nc
-</code></pre></div>    </div>
-  </blockquote>
-</blockquote>
-
-<p>We can now use cut and paste to put the file and directory information into our notebook and read our dataset using <code class="language-plaintext highlighter-rouge">xarray</code></p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">file</span><span class="o">=</span><span class="s">'/shared/obs/gridded/OISSTv2/monthly/sst.mnmean.nc'</span>
-<span class="n">ds</span><span class="o">=</span><span class="n">xr</span><span class="p">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
-<span class="n">ds</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds_mask</span><span class="o">=</span><span class="n">ds_mask</span><span class="p">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">ds_mask</span><span class="p">[</span><span class="s">'lat'</span><span class="p">])))</span>
+<span class="n">ds_data</span><span class="o">=</span><span class="n">ds_data</span><span class="p">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">ds_data</span><span class="p">[</span><span class="s">'lat'</span><span class="p">])))</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">ds_mask</span><span class="p">[</span><span class="s">'mask'</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">colorbar</span><span class="p">()</span>
 </code></pre></div></div>
 
-<p>When we run our cells, we get output that looks exactly like the COLA Data Catalog and the results from <code class="language-plaintext highlighter-rouge">ncdump -h</code></p>
+<p>That’s better! We can see that the mask data are 1 for ocean and 0 for land. We can use <code class="language-plaintext highlighter-rouge">xarray.where</code> to mask the data to only over the ocean.</p>
 
-<p>It tells us that we have an <code class="language-plaintext highlighter-rouge">xarray.Dataset</code> and gives us all the metadata associated with our data.</p>
-
-<h2 id="what-is-an-xarraydataset">What is an <code class="language-plaintext highlighter-rouge">xarray.Dataset</code>?</h2>
-
-<p>In climate data analysis, we typically work with multidimensional data. By multidimensional data (also often called N-dimensional), I mean data with many independent dimensions or axes. For example, we might represent Earth’s surface temperature T as a three dimensional variable:</p>
-
-<p><code class="language-plaintext highlighter-rouge">T(x,y,t)</code></p>
-
-<p>where x is longitude, y is latitude, and t is time.</p>
-
-<p><img src="../fig/dataset-diagraml.png" alt="N-dimensional Data Schematic" /></p>
-
-<p><code class="language-plaintext highlighter-rouge">Xarray</code> has two data structures:</p>
-<ul>
-  <li>a <code class="language-plaintext highlighter-rouge">DataArray</code> which holds a single multi-dimensional variable and its coordinates</li>
-  <li>a <code class="language-plaintext highlighter-rouge">Dataset</code> which can hold multiple variables that potentially share the same coordinates</li>
-</ul>
-
-<p>When we read in our data using <code class="language-plaintext highlighter-rouge">xr.open_dataset</code>, we read it in as an <code class="language-plaintext highlighter-rouge">xr.Dataset</code>.</p>
-
-<p>A <code class="language-plaintext highlighter-rouge">DataArray</code> contains:</p>
-<ul>
-  <li>values: a <code class="language-plaintext highlighter-rouge">numpy.ndarray</code> holdy the array’s values</li>
-  <li>dims: dimension names for each axis (e.g. <code class="language-plaintext highlighter-rouge">lon</code>,<code class="language-plaintext highlighter-rouge">lat</code>,<code class="language-plaintext highlighter-rouge">lev</code>,<code class="language-plaintext highlighter-rouge">time</code>)</li>
-  <li>coords: a container of arrays that label each point</li>
-  <li>attrs: a container of arbitrary metadata</li>
-</ul>
-
-<p>If we access an individual variable within an <code class="language-plaintext highlighter-rouge">xarray.Dataset</code>, we have an <code class="language-plaintext highlighter-rouge">xarray.DataArray</code>. Here’s an example:</p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds</span><span class="p">[</span><span class="s">'sst'</span><span class="p">]</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{:</span> <span class="p">.</span><span class="n">language</span><span class="o">-</span><span class="n">python</span><span class="p">}</span>
+<span class="n">da_ocean</span><span class="o">=</span><span class="n">ds_data</span><span class="p">[</span><span class="s">'sst'</span><span class="p">].</span><span class="n">mean</span><span class="p">(</span><span class="s">'time'</span><span class="p">).</span><span class="n">where</span><span class="p">(</span><span class="n">ds_mask</span><span class="p">[</span><span class="s">'mask'</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">da_ocean</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">da_ocean</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s">'coolwarm'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">colorbar</span><span class="p">()</span>
 </code></pre></div></div>
-
-<p>you will also see this syntax used</p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds</span><span class="p">.</span><span class="n">sst</span>
-</code></pre></div></div>
-
-<p>Compare the output for the <code class="language-plaintext highlighter-rouge">DataArray</code> and the <code class="language-plaintext highlighter-rouge">Dataset</code></p>
-
-<p>We can access individual attribues <code class="language-plaintext highlighter-rouge">attrs</code> of our <code class="language-plaintext highlighter-rouge">Dataset</code> using the following syntax:</p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">units</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s">'sst'</span><span class="p">].</span><span class="n">attrs</span><span class="p">[</span><span class="s">'units'</span><span class="p">]</span>
-<span class="k">print</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
-</code></pre></div></div>
-
-<blockquote class="challenge">
-  <h2 id="using-xarraydatasetattrs-to-label-figures">Using <code class="language-plaintext highlighter-rouge">xarray.Dataset.attrs</code> to label figures</h2>
-
-  <p>Given the following lines of code, how would you use <code class="language-plaintext highlighter-rouge">attrs</code> to add units to
-the colorbar and a title to the map based on the <code class="language-plaintext highlighter-rouge">units</code> and <code class="language-plaintext highlighter-rouge">long_name</code> attributes?</p>
-
-  <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s">'sst'</span><span class="p">][</span><span class="mi">0</span><span class="p">,:,:])</span>
-<span class="n">plt</span><span class="p">.</span><span class="n">title</span><span class="p">(</span><span class="n">FILLINLONGNAMEHERE</span><span class="p">)</span>
-<span class="n">plt</span><span class="p">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">FILLINUNITSHERE</span><span class="p">)</span> 
-</code></pre></div>  </div>
-</blockquote>
-
-<p>The <code class="language-plaintext highlighter-rouge">Xarray</code> package provides many convenient functions and tools for working with N-dimensional datasets. We will learn some of them today.</p>
-
 
 
 
@@ -518,7 +438,7 @@ the colorbar and a title to the map based on the <code class="language-plaintext
   <div class="col-xs-1">
     <h3 class="text-left">
       
-      <a href="../"><span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span><span class="sr-only">lesson home</span></a>
+      <a href="../03-aggregating/index.html"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span><span class="sr-only">previous episode</span></a>
       
     </h3>
   </div>
@@ -528,7 +448,7 @@ the colorbar and a title to the map based on the <code class="language-plaintext
   <div class="col-xs-1">
     <h3 class="text-right">
       
-      <a href="../02-subsetting/index.html"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span><span class="sr-only">next episode</span></a>
+      <a href="../"><span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span><span class="sr-only">lesson home</span></a>
       
     </h3>
   </div>
@@ -556,7 +476,7 @@ the colorbar and a title to the map based on the <code class="language-plaintext
     </div>
     <div class="col-md-6 help-links" align="right">
 	
-	<a href="/edit//_episodes/01-intro.md" data-checker-ignore>Edit on GitHub</a>
+	<a href="/edit//_episodes/04-masking.md" data-checker-ignore>Edit on GitHub</a>
 	
 	/
 	<a href="/blob//CONTRIBUTING.md" data-checker-ignore>Contributing</a>

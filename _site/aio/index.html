@@ -19,7 +19,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="last-modified" content="2020-09-23 19:13:20 -0600">
+    <meta http-equiv="last-modified" content="2020-09-23 20:11:31 -0600">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- meta "search-domain" used for google site search function google_search() -->
     <meta name="search-domain" value="">
@@ -152,6 +152,9 @@
             
             
             <li><a href="../03-aggregating/index.html">Aggregating Data</a></li>
+            
+            
+            <li><a href="../04-masking/index.html">Masking</a></li>
             
 	    <li role="separator" class="divider"></li>
             <li><a href="../aio/index.html">All in one page (Beta)</a></li>
@@ -700,6 +703,115 @@ plt.colorbar()
   </blockquote>
 
 </blockquote>
+
+<blockquote class="keypoints">
+  <h2>Key Points</h2>
+  <ul>
+    
+    <li>
+</li>
+    
+  </ul>
+</blockquote>
+
+<hr />
+
+<h1 id="masking" class="maintitle">Masking</h1>
+
+<blockquote class="objectives">
+  <h2>Overview</h2>
+
+  <div class="row">
+    <div class="col-md-3">
+      <strong>Teaching:</strong> 0 min
+      <br />
+      <strong>Exercises:</strong> 0 min
+    </div>
+    <div class="col-md-9">
+      <strong>Questions</strong>
+      <ul>
+	
+	<li><p>How to I maskout land or ocean?</p>
+</li>
+	
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-9">
+      <strong>Objectives</strong>
+      <ul>
+	
+	<li>
+</li>
+	
+      </ul>
+    </div>
+  </div>
+
+</blockquote>
+
+<p>Sometimes we want to maskout data based on a land/sea mask that is provided.</p>
+
+<h2 id="first-steps">First Steps</h2>
+
+<p>Create a new notebook and save it as Masking.</p>
+
+<p>Import the standard set of packages we use:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="n">xr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="n">ccrs</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</code></pre></div></div>
+
+<p>Read in these two datasets:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data_file</span><span class="o">=</span><span class="s">'/shared/obs/gridded/OISSTv2/monthly/sst.mnmean.nc'</span>
+<span class="n">ds_data</span><span class="o">=</span><span class="n">xr</span><span class="p">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
+<span class="n">ds_data</span>
+</code></pre></div></div>
+
+<p>This is the original data file we read in.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mask_file</span><span class="o">=</span><span class="s">'/shared/obs/gridded/OISSTv2/lmask/lsmask.nc'</span>
+<span class="n">ds_mask</span><span class="o">=</span><span class="n">xr</span><span class="p">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">mask_file</span><span class="p">)</span>
+<span class="n">ds_mask</span>
+</code></pre></div></div>
+
+<p>Let’s look at this file.  It contains a lat and lon grid that is the same as our SST data and a single time.
+The data are 0’s and 1’s.  Plot it.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">ds_mask</span><span class="p">[</span><span class="s">'mask'</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>What does this error mean? 
+The data has a single time dimension so it appears as 3-D to <code class="language-plaintext highlighter-rouge">contourf</code>.  We can drop single dimensions using <code class="language-plaintext highlighter-rouge">squeeze</code></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds_mask</span><span class="o">=</span><span class="n">ds_mask</span><span class="p">.</span><span class="n">squeeze</span><span class="p">()</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">ds_mask</span><span class="p">[</span><span class="s">'mask'</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>The latitudes are upside down.  Let’s fix that like we did before. In this case, we will
+fix it for the mask and the data.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds_mask</span><span class="o">=</span><span class="n">ds_mask</span><span class="p">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">ds_mask</span><span class="p">[</span><span class="s">'lat'</span><span class="p">])))</span>
+<span class="n">ds_data</span><span class="o">=</span><span class="n">ds_data</span><span class="p">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">ds_data</span><span class="p">[</span><span class="s">'lat'</span><span class="p">])))</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">ds_mask</span><span class="p">[</span><span class="s">'mask'</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">colorbar</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>That’s better! We can see that the mask data are 1 for ocean and 0 for land. We can use <code class="language-plaintext highlighter-rouge">xarray.where</code> to mask the data to only over the ocean.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{:</span> <span class="p">.</span><span class="n">language</span><span class="o">-</span><span class="n">python</span><span class="p">}</span>
+<span class="n">da_ocean</span><span class="o">=</span><span class="n">ds_data</span><span class="p">[</span><span class="s">'sst'</span><span class="p">].</span><span class="n">mean</span><span class="p">(</span><span class="s">'time'</span><span class="p">).</span><span class="n">where</span><span class="p">(</span><span class="n">ds_mask</span><span class="p">[</span><span class="s">'mask'</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">da_ocean</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">da_ocean</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s">'coolwarm'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">colorbar</span><span class="p">()</span>
+</code></pre></div></div>
 
 <blockquote class="keypoints">
   <h2>Key Points</h2>
