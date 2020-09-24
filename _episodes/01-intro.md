@@ -32,11 +32,13 @@ import matplotlib.pyplot as plt
 Today we will work with datasets that are on the COLA servers and findable using the COLA Data Catalog.
 We will start by using monthly Sea Surface Temperature (SST) data.
 
-Let's go to the [COLA Data Catalog](https://kpegion.github.io/COLA-DATASETS-CATALOG/)
+Go to the [COLA Data Catalog](https://kpegion.github.io/COLA-DATASETS-CATALOG/)
+
 Browse the main catalog and follow the links to `obs->gridded->ocn->sst->oisstv2_monthly`
 
 Let's take a look at our dataset and what we can learn about it from the catalog:
 * It is 1deg x 1deg
+* Latitudes go from 89.5N to 89.5S -- that seems backwards
 * It goes from Dec 1981 to Apr 2020
 * It was last updated on the COLA Servers on Jun 25, 2020
 * It is located in the '/shared/obs/gridded/OISSTv2` directory
@@ -87,6 +89,7 @@ ds
 {: .language-python}
 
 When we run our cells, we get output that looks exactly like the COLA Data Catalog and the results from `ncdump -h`
+
 It tells us that we have an `xarray.Dataset` and gives us all the metadata associated with our data. 
 
 ## What is an `xarray.Dataset`?
@@ -99,24 +102,56 @@ where x is longitude, y is latitude, and t is time.
 
 ![N-dimensional Data Schematic](../fig/dataset-diagraml.png)
 
-`Xarray` has two datatypes 
+`Xarray` has two data structures:
+* a `DataArray` which holds a single multi-dimensional variable and its coordinates
+* a `Dataset` which can hold multiple variables that potentially share the same coordinates
 
-I always make it a habit to make a quick contour plot of my data to make sure it looks reasonble.  Most of the timewhen I have to spend time to debug an analysis issue, it happened very early on in my code.  Its best to make sure my data are correct before I start doing any analysis.
+When we read in our data using `xr.open_dataset`, we read it in as an `xr.Dataset`.  
+
+A `DataArray` contains:
+* values: a `numpy.ndarray` holdy the array's values
+* dims: dimension names for each axis (e.g. `lon`,`lat`,`lev`,`time`)
+* coords: a container of arrays that label each point
+* attrs: a container of arbitrary metadata
+
+If we access an individual variable within an `xarray.Dataset`, we have an `xarray.DataArray`. Here's an example:
 
 ~~~
-plt.contourf(ds['sst'][0,:,:]
+ds['sst']
 ~~~
 {: .language-python}
 
-Note: `ds['sst'] and `ds.sst` are two ways of accessing 
+you will also see this syntax used
 
-### Subsetting data in Space
+~~~
+ds.sst
+~~~
+{: .language-python}
 
-Often in our research, we want to look at a specific region defined by a set of latitudes and longitudes. 
+Compare the output for the `DataArray` and the `Dataset`
 
+We can access individual attribues `attrs` of our `Dataset` using the following syntax:
 
+~~~
+units=ds['sst'].attrs['units']
+print(units)
+~~~
+{: .language-python}
 
+> ## Using `xarray.Dataset.attrs` to label figures
+>
+> Given the following lines of code, how would you use `attrs` to add units to
+> the colorbar and a title to the map based on the `units` and `long_name` attributes?
+>
+> ~~~
+plt.contourf(ds['sst'][0,:,:])
+plt.title(FILLINLONGNAMEHERE)
+plt.colorbar(label=FILLINUNITSHERE) 
+> ~~~
+> {: .language-python}
+{: .challenge}
 
+The `Xarray` package provides many convenient functions and tools for working with N-dimensional datasets. We will learn some of them today. 
 
 {% include links.md %}
 

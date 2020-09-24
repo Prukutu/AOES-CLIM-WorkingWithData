@@ -19,7 +19,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="last-modified" content="2020-09-09 10:22:19 -0600">
+    <meta http-equiv="last-modified" content="2020-09-23 19:13:20 -0600">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- meta "search-domain" used for google site search function google_search() -->
     <meta name="search-domain" value="">
@@ -47,7 +47,7 @@
     <link rel="icon" type="image/png" href="../assets/favicons/swc/favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="../assets/favicons/swc/favicon-16x16.png" sizes="16x16" />
     <link rel="icon" type="image/png" href="../assets/favicons/swc/favicon-128.png" sizes="128x128" />
-    <meta name="application-name" content="Software Carpentry - Lesson Title"/>
+    <meta name="application-name" content="Software Carpentry - Working with Climate Data"/>
     <meta name="msapplication-TileColor" content="#FFFFFF" />
     <meta name="msapplication-TileImage" content="../assets/favicons/swc/mstile-144x144.png" />
     <meta name="msapplication-square70x70logo" content="../assets/favicons/swc/mstile-70x70.png" />
@@ -64,7 +64,7 @@
 	<![endif]-->
 
   <title>
-  Lesson Title
+  Working with Climate Data
   </title>  
 
   </head>
@@ -73,11 +73,6 @@
     
 
 
-<div class="panel panel-default life-cycle">
-  <div id="life-cycle" class="panel-body pre-alpha">
-    This lesson is still being designed and assembled (Pre-Alpha version)
-  </div>
-</div>
 
 
 
@@ -150,7 +145,13 @@
           <ul class="dropdown-menu">
             
             
-            <li><a href="../01-where-to-get/index.html">Where to get Climate Datasets</a></li>
+            <li><a href="../01-intro/index.html">Getting and Reading Data for Today's Class</a></li>
+            
+            
+            <li><a href="../02-subsetting/index.html">Subsetting Data</a></li>
+            
+            
+            <li><a href="../03-aggregating/index.html">Aggregating Data</a></li>
             
 	    <li role="separator" class="divider"></li>
             <li><a href="../aio/index.html">All in one page (Beta)</a></li>
@@ -211,13 +212,13 @@
 
 
 
-<h1 class="maintitle"><a href="../index.html">Lesson Title</a></h1>
+<h1 class="maintitle"><a href="../index.html">Working with Climate Data</a></h1>
 
 
 
 <article>
 
-<h1 id="where-to-get-climate-datasets" class="maintitle">Where to get Climate Datasets</h1>
+<h1 id="getting-and-reading-data-for-today-s-class" class="maintitle">Getting and Reading Data for Today's Class</h1>
 
 <blockquote class="objectives">
   <h2>Overview</h2>
@@ -232,7 +233,10 @@
       <strong>Questions</strong>
       <ul>
 	
-	<li><p>Where do I find Climate Datasets?</p>
+	<li><p>How do I find and read in the data for today’s class?</p>
+</li>
+	
+	<li><p>What is an xarray.Dataset?</p>
 </li>
 	
       </ul>
@@ -255,28 +259,447 @@
 
 </blockquote>
 
-<h3 id="where-can-i-find-climate-datasets">Where can I find Climate Datasets?</h3>
-
-<p>Many climate datasets are available on the COLA servers, but how do I find this data? Where would I look to find a dataset that is not on the COLA servers?  As I go forward in my research, how do I find datasets I might want to use?</p>
+<h3 id="getting-started">Getting Started</h3>
 
 <ol>
   <li>
-    <p><a href="https://kpegion.github.io/COLA-DATASETS-CATALOG/">COLA Datasets Catalog</a>  We are in the process of cataloging all the dataests on the COLA servers.
-Not everything is there yet, but this is a good place to start if you want to know what data are available locally.</p>
+    <p>Launch a Jupyter notebook on a COLA server.  As a reminder, its best to launch it from your home directory, then you can get to any other directory from within your notebook.</p>
   </li>
   <li>
-    <p><a href="https://psl.noaa.gov/data/gridded/">NOAA/Physical Sciences Lab</a>
-Many climate datasets are here with lots of information and searching capabilities.  This is my go-to for finding climate datasets.</p>
+    <p>Create a new notebook and save it as Subsetting.</p>
   </li>
   <li>
-    <p><a href="https://iridl.ldeo.columbia.edu/index.html?Set-Language=en">IRI/LDEO Climate Data Library</a>
-This is another great resource for finding Climate Datasets</p>
-  </li>
-  <li>
-    <p><a href="https://climatedataguide.ucar.edu/">NCAR Climate Data Guide</a>
-Great resource for getting expert advice on which datasets you should use for your specific application</p>
+    <p>Import the standard set of packages we use:</p>
   </li>
 </ol>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="n">xr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="n">ccrs</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</code></pre></div></div>
+
+<h3 id="find-our-dataset">Find our Dataset</h3>
+
+<p>Today we will work with datasets that are on the COLA servers and findable using the COLA Data Catalog.
+We will start by using monthly Sea Surface Temperature (SST) data.</p>
+
+<p>Go to the <a href="https://kpegion.github.io/COLA-DATASETS-CATALOG/">COLA Data Catalog</a></p>
+
+<p>Browse the main catalog and follow the links to <code class="language-plaintext highlighter-rouge">obs-&gt;gridded-&gt;ocn-&gt;sst-&gt;oisstv2_monthly</code></p>
+
+<p>Let’s take a look at our dataset and what we can learn about it from the catalog:</p>
+<ul>
+  <li>It is 1deg x 1deg</li>
+  <li>Latitudes go from 89.5N to 89.5S – that seems backwards</li>
+  <li>It goes from Dec 1981 to Apr 2020</li>
+  <li>It was last updated on the COLA Servers on Jun 25, 2020</li>
+  <li>It is located in the ‘/shared/obs/gridded/OISSTv2` directory</li>
+</ul>
+
+<p>Now we will take a look at the data on COLA by opening a terminal in our Jupyter Notebook and looking in the directory wehere the data are located:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> /shared/obs/gridded/OISSTv2
+</code></pre></div></div>
+
+<div class="language-plaintext output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lmask  monthly  weekly
+</code></pre></div></div>
+
+<p>Since we are looking for monthly data, let’s look in the monthly sub-directory.  Remember, you can use the <code class="language-plaintext highlighter-rouge">up-arrow</code> to avoid having to re-type:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> /shared/obs/gridded/OISSTv2/monthly
+</code></pre></div></div>
+
+<div class="language-plaintext output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sst.mnmean.nc
+</code></pre></div></div>
+
+<blockquote class="challenge">
+  <h2 id="quick-look-at-metadata-for-our-dataset">Quick look at Metadata for our Dataset</h2>
+
+  <p>What command can you use to look at the metadata for our dataset and confirm that it
+matches the COLA Data Catalog?</p>
+
+  <blockquote class="solution">
+    <h2 id="solution">Solution</h2>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ncdump <span class="nt">-h</span> /shared/obs/gridded/OISSTv2/monthly/sst.mnmean.nc
+</code></pre></div>    </div>
+  </blockquote>
+</blockquote>
+
+<p>We can now use cut and paste to put the file and directory information into our notebook and read our dataset using <code class="language-plaintext highlighter-rouge">xarray</code></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">file</span><span class="o">=</span><span class="s">'/shared/obs/gridded/OISSTv2/monthly/sst.mnmean.nc'</span>
+<span class="n">ds</span><span class="o">=</span><span class="n">xr</span><span class="p">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+<span class="n">ds</span>
+</code></pre></div></div>
+
+<p>When we run our cells, we get output that looks exactly like the COLA Data Catalog and the results from <code class="language-plaintext highlighter-rouge">ncdump -h</code></p>
+
+<p>It tells us that we have an <code class="language-plaintext highlighter-rouge">xarray.Dataset</code> and gives us all the metadata associated with our data.</p>
+
+<h2 id="what-is-an-xarraydataset">What is an <code class="language-plaintext highlighter-rouge">xarray.Dataset</code>?</h2>
+
+<p>In climate data analysis, we typically work with multidimensional data. By multidimensional data (also often called N-dimensional), I mean data with many independent dimensions or axes. For example, we might represent Earth’s surface temperature T as a three dimensional variable:</p>
+
+<p><code class="language-plaintext highlighter-rouge">T(x,y,t)</code></p>
+
+<p>where x is longitude, y is latitude, and t is time.</p>
+
+<p><img src="../fig/dataset-diagraml.png" alt="N-dimensional Data Schematic" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Xarray</code> has two data structures:</p>
+<ul>
+  <li>a <code class="language-plaintext highlighter-rouge">DataArray</code> which holds a single multi-dimensional variable and its coordinates</li>
+  <li>a <code class="language-plaintext highlighter-rouge">Dataset</code> which can hold multiple variables that potentially share the same coordinates</li>
+</ul>
+
+<p>When we read in our data using <code class="language-plaintext highlighter-rouge">xr.open_dataset</code>, we read it in as an <code class="language-plaintext highlighter-rouge">xr.Dataset</code>.</p>
+
+<p>A <code class="language-plaintext highlighter-rouge">DataArray</code> contains:</p>
+<ul>
+  <li>values: a <code class="language-plaintext highlighter-rouge">numpy.ndarray</code> holdy the array’s values</li>
+  <li>dims: dimension names for each axis (e.g. <code class="language-plaintext highlighter-rouge">lon</code>,<code class="language-plaintext highlighter-rouge">lat</code>,<code class="language-plaintext highlighter-rouge">lev</code>,<code class="language-plaintext highlighter-rouge">time</code>)</li>
+  <li>coords: a container of arrays that label each point</li>
+  <li>attrs: a container of arbitrary metadata</li>
+</ul>
+
+<p>If we access an individual variable within an <code class="language-plaintext highlighter-rouge">xarray.Dataset</code>, we have an <code class="language-plaintext highlighter-rouge">xarray.DataArray</code>. Here’s an example:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds</span><span class="p">[</span><span class="s">'sst'</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>you will also see this syntax used</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds</span><span class="p">.</span><span class="n">sst</span>
+</code></pre></div></div>
+
+<p>Compare the output for the <code class="language-plaintext highlighter-rouge">DataArray</code> and the <code class="language-plaintext highlighter-rouge">Dataset</code></p>
+
+<p>We can access individual attribues <code class="language-plaintext highlighter-rouge">attrs</code> of our <code class="language-plaintext highlighter-rouge">Dataset</code> using the following syntax:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">units</span><span class="o">=</span><span class="n">ds</span><span class="p">[</span><span class="s">'sst'</span><span class="p">].</span><span class="n">attrs</span><span class="p">[</span><span class="s">'units'</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+</code></pre></div></div>
+
+<blockquote class="challenge">
+  <h2 id="using-xarraydatasetattrs-to-label-figures">Using <code class="language-plaintext highlighter-rouge">xarray.Dataset.attrs</code> to label figures</h2>
+
+  <p>Given the following lines of code, how would you use <code class="language-plaintext highlighter-rouge">attrs</code> to add units to
+the colorbar and a title to the map based on the <code class="language-plaintext highlighter-rouge">units</code> and <code class="language-plaintext highlighter-rouge">long_name</code> attributes?</p>
+
+  <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s">'sst'</span><span class="p">][</span><span class="mi">0</span><span class="p">,:,:])</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">title</span><span class="p">(</span><span class="n">FILLINLONGNAMEHERE</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">FILLINUNITSHERE</span><span class="p">)</span> 
+</code></pre></div>  </div>
+</blockquote>
+
+<p>The <code class="language-plaintext highlighter-rouge">Xarray</code> package provides many convenient functions and tools for working with N-dimensional datasets. We will learn some of them today.</p>
+
+<blockquote class="keypoints">
+  <h2>Key Points</h2>
+  <ul>
+    
+    <li>
+</li>
+    
+  </ul>
+</blockquote>
+
+<hr />
+
+<h1 id="subsetting-data" class="maintitle">Subsetting Data</h1>
+
+<blockquote class="objectives">
+  <h2>Overview</h2>
+
+  <div class="row">
+    <div class="col-md-3">
+      <strong>Teaching:</strong> 0 min
+      <br />
+      <strong>Exercises:</strong> 0 min
+    </div>
+    <div class="col-md-9">
+      <strong>Questions</strong>
+      <ul>
+	
+	<li><p>How do I extract a particular region from my data?</p>
+</li>
+	
+	<li><p>How do I extract a specific time slice from my data?</p>
+</li>
+	
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-9">
+      <strong>Objectives</strong>
+      <ul>
+	
+	<li>
+</li>
+	
+      </ul>
+    </div>
+  </div>
+
+</blockquote>
+
+<h3 id="subsetting-data-in-space">Subsetting data in Space</h3>
+
+<p>Often in our research, we want to look at a specific region defined by a set of latitudes and longitudes.</p>
+
+<h4 id="conventional-approach">Conventional approach</h4>
+<p>We would have an array, like an <code class="language-plaintext highlighter-rouge">numpy.ndarray</code> with 3 dimensions, such as lat,lon,time that contains our data. We would need to write nested loops with <code class="language-plaintext highlighter-rouge">if</code> statements to find the indices of the latitudes and longitudes we are looking for and then extract out those data to a new array.</p>
+
+<p>This is slow, and has the potential for mistakes if we get the wrong indices. Our data and metadata are disconnected.</p>
+
+<p><code class="language-plaintext highlighter-rouge">xarray</code> makes it possible for us to keep our data and metadata connected and select data based on the dimensions, so we can tell it to extract a specific lat-lon point or select a specific range of lats and lons using teh <code class="language-plaintext highlighter-rouge">sel</code> function.</p>
+
+<h3 id="select-a-point">Select a point</h3>
+
+<p>Let’s try it for a point.  We will pick a latitude and longitude in the middle of the Pacific Ocean.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds_point</span><span class="o">=</span><span class="n">ds</span><span class="p">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">lon</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s">'nearest'</span><span class="p">)</span>
+<span class="n">ds_point</span>
+</code></pre></div></div>
+
+<p>We now have a new <code class="language-plaintext highlighter-rouge">xarray.Dataset</code> with all the times and a single latitude and longitude point. All the metadata is carried around with our new <code class="language-plaintext highlighter-rouge">Dataset</code>.  We can plot this timeseries and label the x-axis with the time information.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds_point</span><span class="p">[</span><span class="s">'time'</span><span class="p">],</span><span class="n">ds_point</span><span class="p">[</span><span class="s">'sst'</span><span class="p">])</span>
+</code></pre></div></div>
+
+<h3 id="select-a-region">Select a Region</h3>
+
+<p>A common region to look at SSTs is the Nino3.4 region.  It is defined as 5S-5N; 170W-120W.</p>
+
+<p><img src="../fig/ninoareas_c.jpg" alt="Nino Region" /></p>
+
+<p>Our longitudes are defined by 0 to 360 (as opposed to -180 to 180), so we need to specify our longitudes consitent with that.  To select a region we use the <code class="language-plaintext highlighter-rouge">sel</code> command with <code class="language-plaintext highlighter-rouge">slice</code></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds_nino34</span><span class="o">=</span><span class="n">ds</span><span class="p">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lon</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">360</span><span class="o">-</span><span class="mi">170</span><span class="p">,</span><span class="mi">360</span><span class="o">-</span><span class="mi">120</span><span class="p">),</span><span class="n">lat</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">ds_nino34</span>
+</code></pre></div></div>
+
+<p>Notice that we have no latitudes, what happened?
+Our data has latitudes going from North to South, but we sliced from South to North.  This results in <code class="language-plaintext highlighter-rouge">sel</code> finding no latitudes in the range.  There are two options to fix this: (1) we can slice in the direction of the latitudes `lat=slice(5,-5)) or (2) we can reverse the latitudes to go from South to North.  Let’s reverse the latitudes.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds</span><span class="o">=</span><span class="n">ds</span><span class="p">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s">'lat'</span><span class="p">])))</span>
+</code></pre></div></div>
+
+<p>This line reverses the latitudes and then tells <code class="language-plaintext highlighter-rouge">xarray</code> to put them back into the latitude coordinate.  But, since <code class="language-plaintext highlighter-rouge">xarray</code> keeps our metadata attached to our data, we can’t just reverse the latitudes without telling <code class="language-plaintext highlighter-rouge">xarray</code> that we want it to attach the reversed latitudes to our data instead of the original latitudes. That’s what the <code class="language-plaintext highlighter-rouge">reindex</code> function does.</p>
+
+<p>Now we can slice our data from 5S to 5N</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds_nino34</span><span class="o">=</span><span class="n">ds</span><span class="p">.</span><span class="n">sel</span><span class="p">(</span><span class="n">lon</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="mi">360</span><span class="o">-</span><span class="mi">170</span><span class="p">,</span><span class="mi">360</span><span class="o">-</span><span class="mi">120</span><span class="p">),</span><span class="n">lat</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">ds_nino34</span>
+</code></pre></div></div>
+
+<p>Now, let’s plot our data</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">ds_nino34</span><span class="p">[</span><span class="s">'lon'</span><span class="p">],</span><span class="n">ds_nino34</span><span class="p">[</span><span class="s">'lat'</span><span class="p">],</span>
+             <span class="n">ds_nino34</span><span class="p">[</span><span class="s">'sst'</span><span class="p">][</span><span class="mi">0</span><span class="p">,:,:],</span><span class="n">cmap</span><span class="o">=</span><span class="s">'RdBu_r'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">colorbar</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h3 id="time-slicing">Time Slicing</h3>
+
+<p>Sometimes we want to get a particular time slice from our data.  Perhaps we have two datasets and we want to select the time slice that is common to both.  In this dataset, the data start in Dec 1981 and end in Apr 2020.  Suppose we want to extract the times for which we have full years (e.g, Jan 1982 to Dec 2019.  We can use the <code class="language-plaintext highlighter-rouge">sel</code> function to also select time slices. Let’s select only these times for our <code class="language-plaintext highlighter-rouge">ds_nino34</code> dataset.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds_nino34</span><span class="o">=</span><span class="n">ds_nino34</span><span class="p">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="s">'1982-01-01'</span><span class="p">,</span><span class="s">'2019-12-01'</span><span class="p">))</span>
+<span class="n">ds_nino34</span>
+</code></pre></div></div>
+
+<blockquote class="callout">
+  <h2 id="writing-data-to-a-file">Writing data to a file</h2>
+
+  <p>In this case the dataset is small, but saving off our intermediate datasets is a common step
+in climate data analysis.  This is because our datasets can be very large so we may not
+want to wait for all our analysis steps to run each time we want to work with this data.
+We can write out our intermediate data to a file for future use.</p>
+
+  <p>It is easy to write an <code class="language-plaintext highlighter-rouge">xarray.Dataset</code> to a netcdf file using the <code class="language-plaintext highlighter-rouge">to_netcdf()</code> function.</p>
+
+  <p>Write out the ds_nino34 dataset to a file in your /scratch directory, like this (replace my username with yours):</p>
+  <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds_nino34</span><span class="p">.</span><span class="n">to_netcdf</span><span class="p">(</span><span class="s">'/scratch/kpegion/nino34_1982-2019.oisstv2.nc'</span><span class="p">)</span>
+</code></pre></div>  </div>
+
+  <p>Bring up a terminal window in Jupyter and convince yourself that the file was written and the metatdata 
+is what you expect by using ncdump</p>
+
+</blockquote>
+
+<blockquote class="keypoints">
+  <h2>Key Points</h2>
+  <ul>
+    
+    <li>
+</li>
+    
+  </ul>
+</blockquote>
+
+<hr />
+
+<h1 id="aggregating-data" class="maintitle">Aggregating Data</h1>
+
+<blockquote class="objectives">
+  <h2>Overview</h2>
+
+  <div class="row">
+    <div class="col-md-3">
+      <strong>Teaching:</strong> 0 min
+      <br />
+      <strong>Exercises:</strong> 0 min
+    </div>
+    <div class="col-md-9">
+      <strong>Questions</strong>
+      <ul>
+	
+	<li><p>How to I aggregate data over various dimensions?</p>
+</li>
+	
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-9">
+      <strong>Objectives</strong>
+      <ul>
+	
+	<li>
+</li>
+	
+      </ul>
+    </div>
+  </div>
+
+</blockquote>
+
+<p>The Oceanic Nino Index (ONI) is used by the Climate Prediction Center to monitor and predict El Nino and La Nina. <a href="https://www.ncdc.noaa.gov/teleconnections/enso/indicators/sst.php">Oceanic Nino Index</a>. It is defined as the 3-month running mean of SST anomalies in the Nino3.4 region. We will use aggregation methods from <code class="language-plaintext highlighter-rouge">xarray</code> to calculate this index.</p>
+
+<h2 id="first-steps">First Steps</h2>
+
+<p>Create a new notebook and save it as Aggregating.</p>
+
+<p>Import the standard set of packages we use:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="n">xr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="n">ccrs</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</code></pre></div></div>
+
+<p>Read in the dataset we wrote in the last notebook.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">file</span><span class="o">=</span><span class="s">'/scratch/kpegion/nino34_1982-2019.oisstv2.nc'</span>
+<span class="n">ds</span><span class="o">=</span><span class="n">xr</span><span class="p">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+<span class="n">ds</span>
+</code></pre></div></div>
+
+<h2 id="take-the-mean-over-a-lat-lon-region">Take the mean over a lat-lon region</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds_nino34_index</span><span class="o">=</span><span class="n">ds</span><span class="p">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">[</span><span class="s">'lat'</span><span class="p">,</span><span class="s">'lon'</span><span class="p">])</span>
+<span class="n">ds_nino34_index</span>
+</code></pre></div></div>
+
+<p>Our data now has only a time dimension. Make a plot.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds_nino34_index</span><span class="p">[</span><span class="s">'time'</span><span class="p">],</span><span class="n">ds_nino34_index</span><span class="p">[</span><span class="s">'sst'</span><span class="p">])</span>
+</code></pre></div></div>
+
+<h2 id="calculate-anomalies">Calculate Anomalies</h2>
+
+<p>Anomaly means departure from normal (called climatology).  We often calculate anomalies for working with climate data.  We will spend time in a future class learning about calculating climatology and anomalies using another feature of <code class="language-plaintext highlighter-rouge">xarray</code> called <code class="language-plaintext highlighter-rouge">groupby</code>.  Today, I will show you the steps with little explanation.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ds_climo</span><span class="o">=</span><span class="n">ds_nino34_index</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'time.month'</span><span class="p">).</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">ds_anoms</span><span class="o">=</span><span class="n">ds_nino34_index</span><span class="p">.</span><span class="n">groupby</span><span class="p">(</span><span class="s">'time.month'</span><span class="p">)</span><span class="o">-</span><span class="n">ds_climo</span>
+<span class="n">ds_anoms</span>
+</code></pre></div></div>
+
+<p>Plot our data.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds_anoms</span><span class="p">[</span><span class="s">'time'</span><span class="p">],</span><span class="n">ds_nino34_index</span><span class="p">[</span><span class="s">'sst'</span><span class="p">])</span>
+</code></pre></div></div>
+
+<blockquote class="callout">
+  <h2 id="why-do-i-constantly-print-and-plot-the-data">Why do I constantly print and plot the data?</h2>
+
+  <p>Printing the data so I can see its dimensions after each
+step provides a check on whether my code did what I 
+intended it to do.</p>
+
+  <p>Plotting also gives me a quick look to make sure 
+everything makes sense.</p>
+
+  <p>I encourage you to do the same when developing and 
+testing new code!</p>
+
+</blockquote>
+
+<h2 id="rolling-running-means">Rolling (Running Means)</h2>
+
+<p>The ONI is calculated using a 3-month running mean.  This can be done using the <code class="language-plaintext highlighter-rouge">rolling</code> function.</p>
+
+<blockquote class="challenge">
+  <h2 id="reading-and-learning-from-documentation">Reading and Learning from Documentation</h2>
+
+  <p>Read the <a href="http://xarray.pydata.org/en/stable/generated/xarray.DataArray.rolling.html">documentation</a> for the <code class="language-plaintext highlighter-rouge">xarray.rolling</code> function.
+Following their example, make a 3-month running mean of the <code class="language-plaintext highlighter-rouge">ds_anoms</code> data.</p>
+
+  <blockquote class="solution">
+    <h2 id="solution">Solution</h2>
+    <blockquote class="language-python">
+      <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ds_3m=ds_anoms(time=3,center=True).mean().dropna(dim='time') 
+ds_3m
+</code></pre></div>      </div>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+<p>Let’s plot our original and 3-month running mean data together</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds_anoms</span><span class="p">[</span><span class="s">'sst'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s">'r'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ds_3m</span><span class="p">[</span><span class="s">'sst'</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s">'b'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">legend</span><span class="p">([</span><span class="s">'orig'</span><span class="p">,</span><span class="s">'smooth'</span><span class="p">])</span>
+</code></pre></div></div>
+
+<blockquote class="challenge">
+  <h2 id="some-other-aggregation-functions">Some other aggregation functions</h2>
+
+  <p>There are a number of other aggregate functions such as: <code class="language-plaintext highlighter-rouge">std</code>,’min’,’max’,’sum’, among others.</p>
+
+  <p>Using the original dataset in this notebook <code class="language-plaintext highlighter-rouge">ds</code>, find and plot the maximum SSTs for each
+gridpoint  over the time dimension.</p>
+
+  <blockquote class="solution">
+    <h2 id="solution-1">Solution</h2>
+    <blockquote class="language-python">
+      <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ds_max=ds.max(dim='time')
+plt.contourf(ds_max['sst'],cmap='Reds')
+plt.colorbar()
+</code></pre></div>      </div>
+    </blockquote>
+  </blockquote>
+
+  <p>Using the original dataset in this notebook <code class="language-plaintext highlighter-rouge">ds</code>, calculate and plot the standard deviation at each
+gridpoint.</p>
+
+  <blockquote class="solution">
+    <h2 id="solution-2">Solution</h2>
+    <blockquote class="language-python">
+      <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ds_std=ds.std(dim='time')
+plt.contourf(ds_std['sst'],cmap='RdBu_r')
+plt.colorbar()
+</code></pre></div>      </div>
+    </blockquote>
+  </blockquote>
+
+</blockquote>
 
 <blockquote class="keypoints">
   <h2>Key Points</h2>
