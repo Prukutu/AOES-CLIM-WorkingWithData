@@ -15,7 +15,7 @@ keypoints:
 
 1. Launch a Jupyter notebook on a COLA server.  As a reminder, its best to launch it from your home directory, then you can get to any other directory from within your notebook.
 
-2. Create a new notebook and save it as Subsetting.
+2. Create a new notebook and save it as Subsetting.ipynb
 
 3. Import the standard set of packages we use:
 

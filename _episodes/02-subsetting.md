@@ -20,7 +20,7 @@ We would have an array, like an `numpy.ndarray` with 3 dimensions, such as lat,l
 
 This is slow, and has the potential for mistakes if we get the wrong indices. Our data and metadata are disconnected. 
 
-`xarray` makes it possible for us to keep our data and metadata connected and select data based on the dimensions, so we can tell it to extract a specific lat-lon point or select a specific range of lats and lons using teh `sel` function.
+`xarray` makes it possible for us to keep our data and metadata connected and select data based on the dimensions, so we can tell it to extract a specific lat-lon point or select a specific range of lats and lons using the `sel` function.
 
 ### Select a point
 
@@ -46,7 +46,7 @@ A common region to look at SSTs is the Nino3.4 region.  It is defined as 5S-5N; 
 
 ![Nino Region](../fig/ninoareas_c.jpg)
 
-Our longitudes are defined by 0 to 360 (as opposed to -180 to 180), so we need to specify our longitudes consitent with that.  To select a region we use the `sel` command with `slice`
+Our longitudes are defined by 0 to 360 (as opposed to -180 to 180), so we need to specify our longitudes consistent with that.  To select a region we use the `sel` command with `slice`
 
 ~~~
 ds_nino34=ds.sel(lon=slice(360-170,360-120),lat=slice(-5,5))
@@ -55,7 +55,9 @@ ds_nino34
 {: .language-python}
 
 Notice that we have no latitudes, what happened?
-Our data has latitudes going from North to South, but we sliced from South to North.  This results in `sel` finding no latitudes in the range.  There are two options to fix this: (1) we can slice in the direction of the latitudes `lat=slice(5,-5)) or (2) we can reverse the latitudes to go from South to North.  Let's reverse the latitudes.
+Our data has latitudes going from North to South, but we sliced from South to North.  This results in `sel` finding no latitudes in the range.  There are two options to fix this: (1) we can slice in the direction of the latitudes `lat=slice(5,-5)` or (2) we can reverse the latitudes to go from South to North.  
+
+Let's reverse the latitudes.
 
 ~~~
 ds=ds.reindex(lat=list(reversed(ds['lat'])))
@@ -106,7 +108,7 @@ ds_nino34
 > {: .language-python}
 >
 > Bring up a terminal window in Jupyter and convince yourself that the file was written and the metatdata 
-> is what you expect by using ncdump
+> is what you expect by using `ncdump`
 >
 {: .callout}
 

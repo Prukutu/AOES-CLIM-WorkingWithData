@@ -14,7 +14,7 @@ Sometimes we want to maskout data based on a land/sea mask that is provided.
 
 ## First Steps
 
-Create a new notebook and save it as Masking.
+Create a new notebook and save it as Masking.ipynb.
 
 Import the standard set of packages we use:
 
@@ -44,8 +44,7 @@ ds_mask
 ~~~
 {: .language-python}
 
-Let's look at this file.  It contains a lat and lon grid that is the same as our SST data and a single time.
-The data are 0's and 1's.  Plot it.
+Let's look at this file.  It contains a lat-lon grid that is the same as our SST data and a single time.  The data are 0's and 1's.  Plot it.
 
 ~~~
 plt.contourf(ds_mask['mask'])
@@ -75,7 +74,7 @@ plt.colorbar()
 That's better! We can see that the mask data are 1 for ocean and 0 for land. We can use `xarray.where` to mask the data to only over the ocean.
 
 ~~~
-da_ocean=ds_data['sst'].mean('time').where(ds_mask['mask']==1)
+da_ocean=ds_data['sst'].mean('time').where(ds_mask['mask'].squeeze()==1)
 da_ocean
 plt.contourf(da_ocean,cmap='coolwarm')
 plt.colorbar()

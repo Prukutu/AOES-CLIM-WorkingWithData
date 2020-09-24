@@ -10,11 +10,11 @@ keypoints:
 - ""
 ---
 
-The Oceanic Nino Index (ONI) is used by the Climate Prediction Center to monitor and predict El Nino and La Nina. [Oceanic Nino Index](https://www.ncdc.noaa.gov/teleconnections/enso/indicators/sst.php). It is defined as the 3-month running mean of SST anomalies in the Nino3.4 region. We will use aggregation methods from `xarray` to calculate this index. 
+The Oceanic Nino Index [ONI](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php) is used by the Climate Prediction Center to monitor and predict El Nino and La Nina. It is defined as the 3-month running mean of SST anomalies in the Nino3.4 region. We will use aggregation methods from `xarray` to calculate this index. 
 
 ## First Steps
 
-Create a new notebook and save it as Aggregating.
+Create a new notebook and save it as Aggregating.ipynb
 
 Import the standard set of packages we use:
 
@@ -64,7 +64,7 @@ ds_anoms
 Plot our data.
 
 ~~~
-plt.plot(ds_anoms['time'],ds_nino34_index['sst'])
+plt.plot(ds_anoms['time'],ds_anoms['sst'])
 ~~~
 {: .language-python}
 
@@ -95,7 +95,7 @@ The ONI is calculated using a 3-month running mean.  This can be done using the 
 >
 >> ## Solution
 >>> ~~~
->>> ds_3m=ds_anoms(time=3,center=True).mean().dropna(dim='time') 
+>>> ds_3m=ds_anoms.rolling(time=3,center=True).mean().dropna(dim='time') 
 >>> ds_3m
 >>> ~~~
 >> {: .language-python}
@@ -114,7 +114,7 @@ plt.legend(['orig','smooth'])
 
 > ## Some other aggregation functions
 >
-> There are a number of other aggregate functions such as: `std`,'min','max','sum', among others.
+> There are a number of other aggregate functions such as: `std`,`min`,`max`,`sum`, among others.
 >
 > Using the original dataset in this notebook `ds`, find and plot the maximum SSTs for each
 > gridpoint  over the time dimension.
