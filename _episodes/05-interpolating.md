@@ -141,7 +141,6 @@ diff
 And plot it...
 
 ~~~
-{: .language-python}
 plt.title('Model - OBS')
 plt.contourf(diff['sst'],clevs,
              cmap='coolwarm')
