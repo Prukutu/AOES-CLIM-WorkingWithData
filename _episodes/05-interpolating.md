@@ -48,7 +48,7 @@ ds_obs
 {: .language-python}
 
 ~~~
-mask_file='/shared/obs/gridded/OISSTv2/lmask/lsmask.nc''
+mask_file='/shared/obs/gridded/OISSTv2/lmask/lsmask.nc'
 ds_mask=xr.open_dataset(mask_file)
 ds_mask
 ~~~
