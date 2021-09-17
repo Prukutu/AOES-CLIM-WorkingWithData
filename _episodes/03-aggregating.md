@@ -59,10 +59,10 @@ plt.plot(ds_nino34_index['time'],ds_nino34_index['sst'])
 
 ## Calculate Anomalies
 
-An anomaly is a departure from normal (i.e., the climatology).  
-We often calculate anomalies for working with climate data.  
-We will spend time in a future class learning about calculating climatology and anomalies using another feature of `xarray` called `groupby`.  
-For now we will proceed with little explanation - but you may intuit that in the code below, we are grouping by month. 
+An anomaly is a departure from normal (i.e., the climatology).
+We often calculate anomalies for working with climate data.
+We will spend time in a future class learning about calculating climatology and anomalies using another feature of `xarray` called `groupby`.
+For now we will proceed with little explanation - but you may intuit that in the code below, we are grouping by month.
 In other words, we are calculating the mean SST for each month and ending up with a climatology whose time dimension is only 12 months:
 
 ~~~
