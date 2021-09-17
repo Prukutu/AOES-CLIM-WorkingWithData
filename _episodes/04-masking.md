@@ -13,8 +13,6 @@ keypoints:
 
 Sometimes we want to maskout data based on a land/sea mask that is provided. 
 
-## First Steps
-
 Create a new markdown cell for this episode:
 
 ~~~
