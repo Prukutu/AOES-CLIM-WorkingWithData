@@ -151,7 +151,7 @@ plt.title('Model - OBS')
 >> 
 >> Look back at the map of the masked observational SST you produced in the **Masking** section of your notebook.
 >> Ocean water can get below 0˚C due to its salt content, but only a couple degrees below.
->> In the observational dataset, it is actual ocean temperature, below the ice, that is reported.
+>> In the observational dataset, it is actually the ocean temperature below the ice that is reported.
 >> 
 >> Thus we are not comparing the same quantities at high latitudes. 
 >> Where there is no sea ice, this is a valid comparison.
