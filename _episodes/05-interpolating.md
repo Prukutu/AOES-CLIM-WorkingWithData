@@ -92,24 +92,24 @@ Let's take a look and compare with our data before interpolation.
 We will make use of `cartopy` again to make more pleasing figures.
 
 ~~~
-fig = plt.figure(figsize=(11,8.5))
+fig=plt.figure(figsize=(11,8.5))
 
 ax=plt.axes(projection=ccrs.PlateCarree(central_longitude=180.0))
 
-cs = ax.pcolormesh(model_interp['lon'],model_interp['lat'],
-                   model_interp['sst'],cmap='coolwarm',transform = ccrs.PlateCarree())
+cs=ax.pcolormesh(model_interp['lon'],model_interp['lat'],
+                   model_interp['sst'],cmap='coolwarm',transform=ccrs.PlateCarree())
 ax.coastlines()
 plt.title('Interpolated')
 ~~~
 {: .language-python}
 
 ~~~
-fig = plt.figure(figsize=(11,8.5))
+fig=plt.figure(figsize=(11,8.5))
 
 ax=plt.axes(projection=ccrs.PlateCarree(central_longitude=180.0))
 
-cs = ax.pcolormesh(ds_model_mean['lon'],ds_model_mean['lat'],
-                   ds_model_mean['sst'],cmap='coolwarm',transform = ccrs.PlateCarree())
+cs=ax.pcolormesh(ds_model_mean['lon'],ds_model_mean['lat'],
+                   ds_model_mean['sst'],cmap='coolwarm',transform=ccrs.PlateCarree())
 ax.coastlines()
 plt.title('Original')
 ~~~
@@ -130,7 +130,7 @@ diff
 And plot it...
 
 ~~~
-fig = plt.figure(figsize=(11,7))
+fig=plt.figure(figsize=(11,7))
 
 plt.pcolormesh(diff['sst'], cmap='summer')
 plt.colorbar()
