@@ -1,6 +1,6 @@
 ---
 title: "Subsetting Data"
-teaching: 25
+teaching: 30
 exercises: 5
 questions:
 - "How do I extract a particular region from my data?"
