@@ -1,6 +1,6 @@
 ---
 title: "Interpolating"
-teaching: 25
+teaching: 30
 exercises: 5
 questions:
 - "How do I interpolate data to a different grid?"
