@@ -1,6 +1,6 @@
 ---
 title: "Aggregating Data"
-teaching: 15
+teaching: 20
 exercises: 15
 questions:
 - "How to I aggregate data over various dimensions?"
