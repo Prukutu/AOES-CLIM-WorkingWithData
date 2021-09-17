@@ -5,9 +5,10 @@ exercises: 5
 questions:
 - "How do I interpolate data to a different grid"
 objectives:
-- ""
+- "Lean how to compare and inspect datasets."
 keypoints:
 - "Interpolating different data sets to a common grid is necessary to perform quantitative comparisons or to combine data"
+- "Don't automatically accept your result. Scrutinize, try to understand the features you see. Do they mean what you think they should mean?
 ---
 
 It is common in climate data analysis to need to interpolate data to a different grid.  One example is that I have model data on a model grid and observed data on a different grid. I want to calculate a difference between model and obs. 
