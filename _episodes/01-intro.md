@@ -1,7 +1,7 @@
 ---
 title: "Getting and Reading Data for Today's Class"
-teaching: 10
-exercises: 2
+teaching: 15
+exercises: 5
 questions:
 - "How do I find and read in the data for today's class?"
 - "What is an xarray.Dataset?"
