@@ -138,7 +138,7 @@ plt.legend(['original','ONI'])
 ~~~
 {: .language-python}
 
-Note that the plotting was not confused by hte fact that the two time series were of different lengths. 
+Note that the plotting was not confused by the fact that the two time series were of different lengths. 
 Because we specified the time coordinate of each as its X-axis values, `plt.plot` could navigate the data and plot it correctly.
 
 > ## Some other aggregation functions
