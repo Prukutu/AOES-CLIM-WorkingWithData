@@ -3,11 +3,11 @@ title: "Interpolating"
 teaching: 25
 exercises: 5
 questions:
-- "How do I interpolate data to a different grid"
+- "How do I interpolate data to a different grid?"
 objectives:
-- "Lean how to compare and inspect datasets."
+- "Learn how to compare and inspect datasets."
 keypoints:
-- "Interpolating different data sets to a common grid is necessary to perform quantitative comparisons or to combine data"
+- "Interpolating different data sets to a common grid is necessary to perform quantitative comparisons or to combine data."
 - "Don't automatically accept your result. Scrutinize, try to understand the features you see. Do they mean what you think they should mean?"
 ---
 
