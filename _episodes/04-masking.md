@@ -1,6 +1,6 @@
 ---
 title: "Masking"
-teaching: 15
+teaching: 20
 exercises: 0
 questions:
 - "How to I maskout land or ocean?"
