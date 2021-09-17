@@ -32,7 +32,7 @@ In a new markdown cell, create a new header for this episode:
 {: .language-python}
 
 
-Read in model data
+Read in some model data
 
 ~~~
 model_path='/shared/cmip5/data/historical/atmos/mon/Amon/ts/CCCma.CanCM4/r1i1p1/'
@@ -42,9 +42,9 @@ ds_model
 ~~~
 {: .language-python}
 
-This data has lats from S to N, so we don't need to reverse it.
+This data has latitudes from S to N, so we don't need to reverse it.
 Take a look at our model data.  
-It is much lower resolution - there are only 64 points in latitude, 128 in longitude.
+It is much lower resolution that the observations we have been using - there are only 64 points in latitude, 128 in longitude.
 
 Also, this data appears to have different units than the obs data. 
 We can change this.
