@@ -1,7 +1,7 @@
 ---
 title: "Subsetting Data"
-teaching: 15
-exercises: 0
+teaching: 25
+exercises: 5
 questions:
 - "How do I extract a particular region from my data?"
 - "How do I extract a specific time slice from my data?"
