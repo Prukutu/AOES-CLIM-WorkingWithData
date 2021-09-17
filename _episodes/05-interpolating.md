@@ -1,7 +1,7 @@
 ---
 title: "Interpolating"
 teaching: 25
-exercises: 0
+exercises: 5
 questions:
 - "How do I interpolate data to a different grid"
 objectives:
@@ -137,3 +137,23 @@ plt.title('Model - OBS')
 ~~~
 {: .language-python}
 
+> ## A critical eye toward your results
+>
+> Does this difference map look OK? A little stange?  Maybe even alarming?
+>
+> There are very large differences at high latitudes - the model is as much as 30˚C colder than observations.
+> What is going on?
+>
+>> ## Solution
+>> Recall that the model variable is not actually SST but surface temperature.
+>> The green areas are where sea ice is present. In the model output, this is the mean temperature of the top of the sea ice.
+>> 
+>> Look back at the map of the masked observational SST you produced in the **Masking** section of your notebook.
+>> Ocean water can get below 0˚C due to its salt content, but only a couple degrees below.
+>> In the observational dataset, it is actual ocean temperature, below the ice, that is reported.
+>> 
+>> Thus we are not comparing the same quantities at high latitudes. 
+>> Where there is no sea ice, this is a valid comparison.
+>> Always be careful to consider what a result means, and why it looks the way it does!
+> {: .solution}
+{: .challenge}
