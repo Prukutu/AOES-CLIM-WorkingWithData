@@ -6,9 +6,9 @@ questions:
 - "How do I extract a particular region from my data?"
 - "How do I extract a specific time slice from my data?"
 objectives:
-- ""
+- "Become familiar with subsetting multidimensional data."
 keypoints:
-- ""
+- "Saving intermediate datasets to disk is a good way to break large data analysis tasks into manageable, repeatable steps."
 ---
 
 ### Subsetting data in Space
