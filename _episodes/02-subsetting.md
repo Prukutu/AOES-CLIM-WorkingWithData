@@ -1,6 +1,6 @@
 ---
 title: "Subsetting Data"
-teaching: 0
+teaching: 15
 exercises: 0
 questions:
 - "How do I extract a particular region from my data?"
@@ -32,17 +32,49 @@ ds_point
 ~~~
 {: .language-python}
 
+The `.sel` method is for selecting data by dimesion names and/or index labels. There are multiple ways of selecting subsets of data in `xarray` - see <a href="http://xarray.pydata.org/en/stable/user-guide/indexing.html">the online documentation</a> for a thorough discussion with examples.
+
+Note that this DataSet has two data variables - the one we are interested in is `sst`. 
+`xarray` allows you to apply many methods to entire Datasets that other programming languages would only permit on individual DataArrays.
+This is a powerful feature, but can be cofusing - always think about the scope of any operation in Python when you apply it.
+
+We could apply `sel` only to the `sst` DataArray instead of the entire Dataset:
+
+~~~
+da_point=ds.sel(lat=0,lon=180,method='nearest')
+np.array_equal(da_point,ds_point['sst'])
+~~~
+{: .language-python}
+
+The `numpy` function `array_equal` tests if two arrays have exactly the same dimensions and contents. 
+You can see that the test is passed - the two appraches yield the same final result.
+
 We now have a new `xarray.Dataset` with all the times and a single latitude and longitude point. All the metadata is carried around with our new `Dataset`.  We can plot this timeseries and label the x-axis with the time information.
+
+
+~~~
+plt.plot(ds_point['sst'])
+~~~
+{: .language-python}
+
+Note the X-axis simply counts the 461 time steps.  
+This is not very informative if we would like to know when a particular spike occurred. 
+When `plt.plot` is given one series, it is assumed to be the values on the Y axis and the X axis is simply counted as the element number in the seroes.
+We can give it two series - the first is then the values for the X-axis:
 
 ~~~
 plt.plot(ds_point['time'],ds_point['sst'])
 ~~~
 {: .language-python}
 
+For `matplotlib.pyplot`, it is good to consult the [documentation](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.html), 
+not just to learn the syntax for using a specific function, but also to see the possibilities that you may try.
+There are a lot of creative options that you may not have considered originally.
+
 
 ### Select a Region
 
-A common region to look at SSTs is the Nino3.4 region.  It is defined as 5S-5N; 170W-120W.
+A common region to look at SSTs is the Niño3.4 region.  It is defined as 5S-5N; 170W-120W.
 
 ![Nino Region](../fig/ninoareas_c.jpg)
 
@@ -81,6 +113,12 @@ plt.contourf(ds_nino34['lon'],ds_nino34['lat'],
 plt.colorbar()
 ~~~
 {: .language-python}
+
+Note that the plot fills the available area - it is not in the _shape_ of the actual Niño3.4 region but has been stretched along the Y-axis. There are ways to control plot shapes and positions - we will talk about them later in the course.
+
+Also, there are many options for colormaps.
+See [this page](https://matplotlib.org/stable/tutorials/colors/colormaps.html) for inspiration.
+
 
 ### Time Slicing
 
