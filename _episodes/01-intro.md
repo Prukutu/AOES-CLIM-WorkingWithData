@@ -1,14 +1,14 @@
 ---
 title: "Getting and Reading Data for Today's Class"
-teaching: 0
-exercises: 0
+teaching: 10
+exercises: 2
 questions:
 - "How do I find and read in the data for today's class?"
 - "What is an xarray.Dataset?"
 objectives:
-- ""
+- "Discern DataArrays from Datasets in xarray"
 keypoints:
-- ""
+- "A Dataset may contain one or more DataArrays"
 ---
 
 ### Getting Started
@@ -94,7 +94,7 @@ It tells us that we have an `xarray.Dataset` and gives us all the metadata assoc
 
 ## What is an `xarray.Dataset`?
 
-In climate data analysis, we typically work with multidimensional data. By multidimensional data (also often called N-dimensional), I mean data with many independent dimensions or axes. For example, we might represent Earth's surface temperature T as a three dimensional variable:
+In climate data analysis, we typically work with <u>multidimensional</u> data. By multidimensional data (also often called N-dimensional), we mean data with many independent dimensions or axes. For example, we might represent Earth's surface temperature T as a three dimensional variable:
 
 `T(x,y,t)`
 
@@ -103,18 +103,18 @@ where x is longitude, y is latitude, and t is time.
 ![N-dimensional Data Schematic](../fig/dataset-diagraml.png)
 
 `Xarray` has two data structures:
-* a `DataArray` which holds a single multi-dimensional variable and its coordinates
-* a `Dataset` which can hold multiple variables that potentially share the same coordinates
+* a `DataArray`, which holds a single multi-dimensional variable (or 'grid') and its coordinates
+* a `Dataset`, which can hold multiple variables (DataArrays) that share some or all of the same coordinates
 
-When we read in our data using `xr.open_dataset`, we read it in as an `xr.Dataset`.  
+When we read in our data using `xr.open_dataset`, we read it in as an `xr.Dataset` object containing one or more DataArrays.  
 
 A `DataArray` contains:
-* values: a `numpy.ndarray` holdy the array's values
+* values: a `numpy.ndarray` holdy the array's values (usually 1 or more dimensions)
 * dims: dimension names for each axis (e.g. `lon`,`lat`,`lev`,`time`)
 * coords: a container of arrays that label each point
 * attrs: a container of arbitrary metadata
 
-If we access an individual variable within an `xarray.Dataset`, we have an `xarray.DataArray`. Here's an example:
+If we access an individual variable within an `xarray.Dataset` object, we have an `xarray.DataArray` object. Here's an example:
 
 ~~~
 ds['sst']
@@ -127,6 +127,9 @@ you will also see this syntax used
 ds.sst
 ~~~
 {: .language-python}
+
+The latter is a little less flexible - it is harder to specify variables as Dataset names, and may fail if there are special characters in the name. The `ds['sst']` construct is more robust. 
+
 
 Compare the output for the `DataArray` and the `Dataset`
 
@@ -151,7 +154,7 @@ plt.colorbar(label=FILLINUNITSHERE)
 > {: .language-python}
 {: .challenge}
 
-The `Xarray` package provides many convenient functions and tools for working with N-dimensional datasets. We will learn some of them today. 
+The `xarray` package provides many convenient functions and tools for working with N-dimensional datasets. We will learn some of them today. 
 
 {% include links.md %}
 
