@@ -1,6 +1,6 @@
 ---
 title: "Getting and Reading Data for Today's Class"
-teaching: 15
+teaching: 20
 exercises: 5
 questions:
 - "How do I find and read in the data for today's class?"
