@@ -41,7 +41,7 @@ This is a powerful feature, but can be cofusing - always think about the scope o
 We could apply `sel` only to the `sst` DataArray instead of the entire Dataset:
 
 ~~~
-da_point=ds.sel(lat=0,lon=180,method='nearest')
+da_point=ds['sst'].sel(lat=0,lon=180,method='nearest')
 np.array_equal(da_point,ds_point['sst'])
 ~~~
 {: .language-python}
