@@ -132,7 +132,7 @@ And plot it...
 ~~~
 fig=plt.figure(figsize=(11,7))
 
-plt.pcolormesh(diff['sst'], cmap='summer')
+plt.pcolormesh(diff.lon,diff.lat,diff['sst'], cmap='summer')
 plt.colorbar()
 plt.title('Model - OBS')
 ~~~
