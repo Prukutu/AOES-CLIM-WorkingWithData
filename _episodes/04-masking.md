@@ -29,7 +29,15 @@ ds_obs
 ~~~
 {: .language-python}
 
-This is the original data file we read in.
+This is the original data file we read in. Let's plot the time mean again here.
+
+~~~
+plt.contourf(ds_obs.lon,ds_obs.lat,ds_obs['sst'].mean('time'),cmap='coolwarm')
+plt.colorbar()
+~~~
+{: .language-python}
+
+Next let's read in a second file.
 
 ~~~
 mask_file='/shared/obs/gridded/OISSTv2/lmask/lsmask.nc'
@@ -64,7 +72,7 @@ fix it for both the mask and the data.
 
 ~~~
 ds_mask=ds_mask.reindex(lat=list(reversed(ds_mask['lat'])))
-ds_data=ds_data.reindex(lat=list(reversed(ds_data['lat'])))
+ds_obs=ds_obs.reindex(lat=list(reversed(ds_obs['lat'])))
 plt.pcolormesh(ds_mask['mask'])
 plt.colorbar()
 ~~~
@@ -74,7 +82,7 @@ That's better! We can see that the mask data are 1 for ocean and 0 for land.
 We can use the `where` method in `xarray` to mask the data to only over the ocean.
 
 ~~~
-da_ocean=ds_data['sst'].mean('time').where(ds_mask['mask']==1)
+da_ocean=ds_obs['sst'].mean('time').where(ds_mask['mask']==1)
 da_ocean
 plt.contourf(da_ocean,cmap='coolwarm')
 plt.colorbar()
