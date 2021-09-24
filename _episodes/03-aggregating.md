@@ -71,6 +71,11 @@ ds_climo
 ~~~
 {: .language-python}
 
+~~~
+plt.plot(ds_climo.sst)
+~~~
+{: .language-python}
+
 Below we calculate anomalies by subtracting the climatology from the original time series:
 
 ~~~
@@ -132,8 +137,8 @@ The ONI is calculated using a 3-month running mean.  This can be done using the 
 Let's plot our original and 3-month running mean data together
 
 ~~~
-plt.plot(ds_anoms['sst'],color='r')
-plt.plot(ds_3m['sst'],color='b')
+plt.plot(ds_anoms['time'],ds_anoms['sst'],color='r')
+plt.plot(ds_3m['time'],ds_3m['sst'],color='b')
 plt.legend(['original','ONI'])
 ~~~
 {: .language-python}
@@ -151,7 +156,7 @@ Because we specified the time coordinate of each as its X-axis values, `plt.plot
 >> ## Solution
 >>> ~~~
 >>> ds_max=ds.max(dim='time')
->>> plt.contourf(ds_max['sst'],cmap='Reds_r')
+>>> plt.contourf(ds.lon,ds.lat,ds_max['sst'],cmap='Reds_r')
 >>> plt.colorbar()
 >>> ~~~
 >> {: .language-python}
@@ -163,7 +168,7 @@ Because we specified the time coordinate of each as its X-axis values, `plt.plot
 >> ## Solution
 >>> ~~~
 >>> ds_std=ds.std(dim='time')
->>> plt.contourf(ds_std['sst'],cmap='YlGnBu_r')
+>>> plt.contourf(ds.lon,ds.lat,ds_std['sst'],cmap='YlGnBu_r')
 >>> plt.colorbar()
 >>> ~~~
 >> {: .language-python}
