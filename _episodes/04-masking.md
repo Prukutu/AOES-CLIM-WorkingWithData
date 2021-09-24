@@ -89,6 +89,16 @@ plt.colorbar()
 ~~~
 {: .language-python}
 
+Lastly let's add the longitude and latitude labels to the plot.
+
+~~~
+da_ocean=ds_obs['sst'].mean('time').where(ds_mask['mask']==1)
+da_ocean
+plt.contourf(ds_obs.lon,ds_obs.lat,da_ocean,cmap='coolwarm')
+plt.colorbar()
+~~~
+{: .language-python}
+
 The `xarray` [documentation](http://xarray.pydata.org/en/stable/api.html) is also worth bookmarking. 
 Keep in mind that in Python there is usually a very simple and straightforward function or library that will do anything you want to do.
 Often the trick is discovering the right function!
