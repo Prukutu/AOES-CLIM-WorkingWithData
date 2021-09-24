@@ -7,7 +7,7 @@ questions:
 objectives:
 - "Lean how to apply aggregating functions across multidimensional DataArrays which, in other languages, would require looping."
 keypoints:
-- "Aggregation functions are "
+- "Aggregation functions are used often in climate data analysis, and are made easy with xarray"
 ---
 
 The Oceanic Niño Index [ONI](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php) is used by the Climate Prediction Center to monitor and predict El Niño and La Niña. It is defined as the 3-month running mean of SST anomalies in the Niño3.4 region. We will use aggregation methods from `xarray` to calculate this index. 
