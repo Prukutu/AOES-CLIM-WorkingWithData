@@ -57,6 +57,59 @@ plt.plot(ds_nino34_index['time'],ds_nino34_index['sst'])
 ~~~
 {: .language-python}
 
+## Take the weighted mean over a lat-lon region
+
+When performing a spatial average of data on a lat-lon grid we need to take into account the fact that the area of each grid cell is not the same because lines of longitude converge as they approach the poles leading to a decrease in delta x (your east-west distance in m) following the cosin of latitude, and therefore gird cell area = delta x * delta y. One must therefore perform an area weighted average = sum(var * weights) / sum(weights) where weights is proportional to the area of each grid cell i.e. the cosin of latitude
+
+Xarray has some build in funtionally to assist in calculating this weighted area average. First you will need to create a “weights” array proportional to cosine of latitude, this is the area-weighting factor for data on a regular lat-lon grid.
+
+~~~
+weights = np.cos(np.deg2rad(ds.lat))
+weights.dims
+~~~
+{: .language-python}
+
+We see that the weights variable has the dimensions of latitude.
+
+~~~
+plt.plot(ds.lat,weights)
+~~~
+{: .language-python}
+
+Let's evaluate the impact of multiplying our SST feild by these weights. 
+
+~~~
+weighted_sst = ds.sst * weights
+plt.plot(ds.lat,weighted_sst[0,:,0])
+plt.plot(ds.lat,ds.sst[0,:,0])
+~~~
+{: .language-python}
+
+This weighting leads to small difference because of our small tropical domain, but would be more important if calucalting an domain average over a larger region or closer to the poles.
+
+Next let's use Xarray's build in fuctionality for weighted reductions. It create a special intermediate DataArrayWeighted object, to which different reduction operations can applied - https://xarray-contrib.github.io/xarray-tutorial/scipy-tutorial/03_computation_with_xarray.html
+
+~~~
+sst_weighted = ds.sst.weighted(weights)
+sst_weighted
+~~~
+{: .language-python}
+
+Now let's use this to calculate the area weighted mean
+
+~~~
+ds_nino34_index_weighted=sst_weighted.mean(dim=("lon", "lat"))
+~~~
+{: .language-python}
+
+Because we are in a small domain in the tropics this makes a very small difference, but is very important when taking the gloabl mean of a feild for example.
+
+~~~
+plt.plot(ds_nino34_index['time'],ds_nino34_index['sst'])
+plt.plot(ds_nino34_index_weighted['time'],ds_nino34_index_weighted)
+~~~
+{: .language-python}
+
 ## Calculate Anomalies
 
 An anomaly is a departure from normal (i.e., the climatology).
