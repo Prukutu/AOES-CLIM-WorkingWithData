@@ -59,9 +59,9 @@ plt.plot(ds_nino34_index['time'],ds_nino34_index['sst'])
 
 ## Take the weighted mean over a lat-lon region
 
-When performing a spatial average of data on a lat-lon grid we need to take into account the fact that the area of each grid cell is not the same because lines of longitude converge as they approach the poles leading to a decrease in delta x (your east-west distance in m) following the cosin of latitude, and therefore gird cell area = delta x * delta y. One must therefore perform an area weighted average = sum(var * weights) / sum(weights) where weights is proportional to the area of each grid cell i.e. the cosin of latitude
+When performing a spatial average of data on a lat-lon grid we need to take into account the fact that the area of each grid cell is not the same because lines of longitude converge as they approach the poles. This convergence leads to a decrease in delta x (east-west distance in m) following the cosin of latitude, and therefore grid cell area (delta x * delta y). One must therefore perform an area weighted average = sum(var * weights) / sum(weights) where the weights are proportional to the area of each grid cell i.e. the cosin of latitude
 
-Xarray has some build in funtionally to assist in calculating this weighted area average. First you will need to create a “weights” array proportional to cosine of latitude, this is the area-weighting factor for data on a regular lat-lon grid.
+Xarray has some build in funtionality to assist in calculating this weighted area average. First you will need to create a “weights” array proportional to cosine of latitude, this is the area-weighting factor for data on a regular lat-lon grid.
 
 ~~~
 weights = np.cos(np.deg2rad(ds.lat))
@@ -102,7 +102,7 @@ ds_nino34_index_weighted=sst_weighted.mean(dim=("lon", "lat"))
 ~~~
 {: .language-python}
 
-Because we are in a small domain in the tropics this makes a very small difference, but is very important when taking the gloabl mean of a feild for example.
+Because we are in a small tropical domain this makes a very small difference, but is very important when taking the gloabl mean of a feild for example.
 
 ~~~
 plt.plot(ds_nino34_index['time'],ds_nino34_index['sst'])
