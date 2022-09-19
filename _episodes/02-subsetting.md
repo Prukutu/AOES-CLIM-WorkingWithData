@@ -20,40 +20,61 @@ We would have an array, like an `numpy.ndarray` with 3 dimensions, such as lat,l
 
 This is slow, and has the potential for mistakes if we get the wrong indices. Our data and metadata are disconnected. 
 
-`xarray` makes it possible for us to keep our data and metadata connected and select data based on the dimensions, so we can tell it to extract a specific lat-lon point or select a specific range of lats and lons using the `sel` function.
+`xarray` makes it possible for us to keep our data and metadata connected and select data based on the dimensions, so we can tell it to extract a specific lat-lon point or select a specific range of lats and lons using the `sel` function. This is a very powerful feature of `xarray`, the ability to parse large datasets efficiently.
 
 ### Select a point
 
 Let's try it for a point.  We will pick a latitude and longitude in the middle of the Pacific Ocean. 
 
 ~~~
-ds_point=ds.sel(lat=0,lon=180,method='nearest')
+ds_point=ds.sel(lat=[0],lon=[180],method='nearest')
 ds_point
 ~~~
 {: .language-python}
 
-The `.sel` method is for selecting data by dimesion names and/or index labels. There are multiple ways of selecting subsets of data in `xarray` - see <a href="http://xarray.pydata.org/en/stable/user-guide/indexing.html">the online documentation</a> for a thorough discussion with examples.
+The `.sel` method is for selecting data by dimesion names and/or index labels. 
+We can use it to slice out a set of rows and/or columns from a DataArray - 
+here we are selecting only one point, but we still put the values 
+(of latitude and longitude) into lists; lists of one element each.
 
-Note that this DataSet has two data variables - the one we are interested in is `sst`. 
+There are multiple ways of selecting subsets of data in `xarray` - see 
+[the online documentation](http://xarray.pydata.org/en/stable/user-guide/indexing.html) 
+for a thorough discussion with examples.
+
+Note that this Dataset has two data variables - the one we are interested in is `sst`. 
 `xarray` allows you to apply many methods to entire Datasets that other programming languages would only permit on individual DataArrays.
-This is a powerful feature, but can be cofusing - always think about the scope of any operation in Python when you apply it.
+This is a powerful feature, but can be confusing - always think about the scope of any operation in Python when you apply it.
 
 We could apply `sel` only to the `sst` DataArray instead of the entire Dataset:
 
 ~~~
-da_point=ds['sst'].sel(lat=0,lon=180,method='nearest')
+da_point=ds['sst'].sel(lat=[0],lon=[180],method='nearest')
+da_point
+~~~
+{: .language-python}
+
+We now see that the result `da_point` is a `xarray.DataArray`, not a `xarray.Dataset`, and it has one dimension: `time`.
+
+This operation is more efficient. 
+If we had a very large Dataset but were only interested in the values from one DataArray,
+it would be wasteful to perform this subsetting on all the variables.
+
+The `numpy` function `array_equal` tests if two arrays have exactly the same dimensions and contents. 
+
+~~~
 np.array_equal(da_point,ds_point['sst'])
 ~~~
 {: .language-python}
 
-The `numpy` function `array_equal` tests if two arrays have exactly the same dimensions and contents. 
-You can see that the test is passed - the two appraches yield the same final result.
+You can see that the result of the test is `true` - the two appraches yield the same final result.
+
+
+### Plotting a time series
 
 We now have a new `xarray.Dataset` with all the times and a single latitude and longitude point. All the metadata is carried around with our new `Dataset`.  We can plot this timeseries and label the x-axis with the time information.
 
-
 ~~~
-plt.plot(ds_point['sst'])
+plt.plot(da_point)
 ~~~
 {: .language-python}
 
@@ -63,7 +84,7 @@ When `plt.plot` is given one series, it is assumed to be the values on the Y axi
 We can give it two series - the first is then the values for the X-axis:
 
 ~~~
-plt.plot(ds_point['time'],ds_point['sst'])
+plt.plot(da_point['time'],da_point)
 ~~~
 {: .language-python}
 
@@ -81,7 +102,7 @@ A common region to look at SSTs is the Niño3.4 region.  It is defined as 5S-5N;
 Our longitudes are defined by 0 to 360 (as opposed to -180 to 180), so we need to specify our longitudes consistent with that.  To select a region we use the `sel` command with `slice`
 
 ~~~
-ds_nino34=ds.sel(lon=slice(360-170,360-120),lat=slice(-5,5))
+ds_nino34=ds['sst'].sel(lon=slice(360-170,360-120),lat=slice(-5,5))
 ds_nino34
 ~~~
 {: .language-python}
@@ -98,18 +119,19 @@ ds=ds.reindex(lat=list(reversed(ds['lat'])))
 
 This line reverses the latitudes and then tells `xarray` to put them back into the latitude coordinate.  But, since `xarray` keeps our metadata attached to our data, we can't just reverse the latitudes without telling `xarray` that we want it to attach the reversed latitudes to our data instead of the original latitudes. That's what the `reindex` function does. 
 
-Now we can slice our data from 5S to 5N
+Now we can slice our data from 5S to 5N:
+
 ~~~
-ds_nino34=ds.sel(lon=slice(360-170,360-120),lat=slice(-5,5))
+ds_nino34=ds['sst'].sel(lon=slice(360-170,360-120),lat=slice(-5,5))
 ds_nino34
 ~~~
 {: .language-python}
 
-Now, let's plot our data
+Now, let's plot our data:
 
 ~~~
 plt.contourf(ds_nino34['lon'],ds_nino34['lat'],
-             ds_nino34['sst'][0,:,:],cmap='RdBu_r')
+             ds_nino34[0,:,:],cmap='RdBu_r')
 plt.colorbar()
 ~~~
 {: .language-python}
@@ -140,13 +162,14 @@ ds_nino34
 > It is easy to write an `xarray.Dataset` to a netcdf file using the `to_netcdf()` function.
 >
 > Write out the ds_nino34 dataset to a file in your /scratch directory, like this (replace my username with yours):
+> 
 > ~~~
-> ds_nino34.to_netcdf('/scratch/kpegion/nino34_1982-2019.oisstv2.nc')
+> ds_nino34.to_netcdf('/scratch/YOUR_USERID/nino34_1982-2019.oisstv2.nc')
 > ~~~ 
 > {: .language-python}
 >
 > Bring up a terminal window in Jupyter and convince yourself that the file was written and the metatdata 
-> is what you expect by using `ncdump`
+> is what you expect by using `ncks -M`
 >
 {: .callout}
 
