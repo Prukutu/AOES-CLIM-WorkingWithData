@@ -45,7 +45,7 @@ ds
 ## Take the mean over a lat-lon region
 
 ~~~
-ds_nino34_index=ds.mean(dim=['lat','lon'])
+ds_nino34_index = ds.mean(dim=['lat','lon'])
 ds_nino34_index
 ~~~
 {: .language-python}
@@ -98,7 +98,7 @@ sst_weighted
 Now let's use this to calculate the area weighted mean
 
 ~~~
-ds_nino34_index_weighted=sst_weighted.mean(dim=("lon", "lat"))
+ds_nino34_index_weighted = sst_weighted.mean(dim=("lon", "lat"))
 ~~~
 {: .language-python}
 
@@ -114,25 +114,33 @@ plt.plot(ds_nino34_index_weighted['time'],ds_nino34_index_weighted)
 
 An anomaly is a departure from normal (i.e., the climatology).
 We often calculate anomalies for working with climate data.
+
+Change the next cell from **code** to **markdown** and add a title for this section:
+
+~~~
+### Anomalies
+~~~
+{: .language-python}
+
 We will spend time in a future class learning about calculating climatology and anomalies using another feature of `xarray` called `groupby`.
 For now we will proceed with little explanation - but you may intuit that in the code below, we are grouping by month.
 In other words, we are calculating the mean SST for each month and ending up with a climatology whose time dimension is only 12 months:
 
 ~~~
-ds_climo=ds_nino34_index.groupby('time.month').mean()
+ds_climo = ds_nino34_index.groupby('time.month').mean()
 ds_climo
 ~~~
 {: .language-python}
 
 ~~~
-plt.plot(ds_climo.sst)
+plt.plot(ds_climo.month,ds_climo.sst)
 ~~~
 {: .language-python}
 
 Below we calculate anomalies by subtracting the climatology from the original time series:
 
 ~~~
-ds_anoms=ds_nino34_index.groupby('time.month')-ds_climo
+ds_anoms = ds_nino34_index.groupby('time.month')-ds_climo
 ds_anoms
 ~~~
 {: .language-python}
@@ -171,7 +179,7 @@ The ONI is calculated using a 3-month running mean.  This can be done using the 
 >
 >> ## Solution
 >>> ~~~
->>> ds_3m=ds_anoms.rolling(time=3,center=True).mean().dropna(dim='time') 
+>>> ds_3m = ds_anoms.rolling(time=3,center=True).mean().dropna(dim='time') 
 >>> ds_3m
 >>> ~~~
 >> {: .language-python}
@@ -208,7 +216,7 @@ Because we specified the time coordinate of each as its X-axis values, `plt.plot
 >
 >> ## Solution
 >>> ~~~
->>> ds_max=ds.max(dim='time')
+>>> ds_max = ds.max(dim='time')
 >>> plt.contourf(ds.lon,ds.lat,ds_max['sst'],cmap='Reds_r')
 >>> plt.colorbar()
 >>> ~~~
@@ -220,7 +228,7 @@ Because we specified the time coordinate of each as its X-axis values, `plt.plot
 >
 >> ## Solution
 >>> ~~~
->>> ds_std=ds.std(dim='time')
+>>> ds_std = ds.std(dim='time')
 >>> plt.contourf(ds.lon,ds.lat,ds_std['sst'],cmap='YlGnBu_r')
 >>> plt.colorbar()
 >>> ~~~
