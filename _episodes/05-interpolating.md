@@ -106,7 +106,7 @@ plt.title('Original')
 ~~~
 {: .language-python}
 
-![Model minus Obs]({{ page.root }}/fig/Original.jpg)
+![Model minus Obs](../fig/Original.jpg)
 
 ~~~
 fig = plt.figure(figsize=(11,8.5))
@@ -120,7 +120,7 @@ plt.title('Interpolated')
 ~~~
 {: .language-python}
 
-![Model minus Obs]({{ page.root }}/fig/Interpolated.jpg)
+![Model minus Obs](../fig/Interpolated.jpg)
 
 You can clearly see the coarser _pixelation_ in the original grid, as it is lower resolution.
 
