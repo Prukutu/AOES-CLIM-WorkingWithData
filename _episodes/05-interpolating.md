@@ -35,9 +35,9 @@ In a new markdown cell, create a new header for this episode:
 Read in some model data
 
 ~~~
-model_path='/shared/cmip5/data/historical/atmos/mon/Amon/ts/CCCma.CanCM4/r1i1p1/'
-model_file='ts_Amon_CanCM4_historical_r1i1p1_196101-200512.nc'
-ds_model=xr.open_dataset(model_path+model_file)
+model_path = '/home/pdirmeye/classes/clim680_2022/CCCma.CanCM4/'
+model_file = 'ts_Amon_CanCM4_historical_r1i1p1_196101-200512.nc'
+ds_model = xr.open_dataset(model_path+model_file)
 ds_model
 ~~~
 {: .language-python}
@@ -50,8 +50,8 @@ Also, this data appears to have different units than the obs data.
 We can change this.
 
 ~~~
-ds_model['ts']=ds_model['ts']-273.15
-ds_model['ts'].attrs['units']=ds_obs['sst'].attrs['units']
+ds_model['ts'] = ds_model['ts'] - 273.15
+ds_model['ts'].attrs['units'] = ds_obs['sst'].attrs['units']
 ~~~
 {: .language-python}
 
@@ -60,8 +60,8 @@ Remember that `xarray` keeps our metadata with our data, so we also had to chang
 How would you take the time mean of each dataset?
 
 ~~~
-ds_obs_mean=ds_obs.mean(dim='time')
-ds_model_mean=ds_model.mean(dim='time')
+ds_obs_mean = ds_obs.mean(dim='time')
+ds_model_mean = ds_model.mean(dim='time')
 ds_model_mean
 ~~~
 {: .language-python}
@@ -76,14 +76,14 @@ Both of our datasets use lat and lon, but the model dataset uses `ts` (because i
 Let's change the name of the model variable to `sst`.
 
 ~~~
-ds_model_mean=ds_model_mean.rename({'ts':'sst'})
+ds_model_mean = ds_model_mean.rename({'ts':'sst'})
 ~~~
 {: .language-python}
 
 We will interpolate the model to match the obs. 
 
 ~~~
-model_interp=ds_model_mean.interp_like(ds_obs_mean)
+model_interp = ds_model_mean.interp_like(ds_obs_mean)
 model_interp
 ~~~
 {: .language-python}
@@ -92,11 +92,11 @@ Let's take a look and compare with our data before interpolation.
 We will make use of `cartopy` again to make more pleasing figures.
 
 ~~~
-fig=plt.figure(figsize=(11,8.5))
+fig = plt.figure(figsize=(11,8.5))
 
-ax=plt.axes(projection=ccrs.PlateCarree(central_longitude=180.0))
+ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180.0))
 
-cs=ax.pcolormesh(model_interp['lon'],model_interp['lat'],
+cs = ax.pcolormesh(model_interp['lon'],model_interp['lat'],
                    model_interp['sst'],cmap='coolwarm',transform=ccrs.PlateCarree())
 ax.coastlines()
 plt.title('Interpolated')
@@ -104,25 +104,25 @@ plt.title('Interpolated')
 {: .language-python}
 
 ~~~
-fig=plt.figure(figsize=(11,8.5))
+fig = plt.figure(figsize=(11,8.5))
 
-ax=plt.axes(projection=ccrs.PlateCarree(central_longitude=180.0))
+ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180.0))
 
-cs=ax.pcolormesh(ds_model_mean['lon'],ds_model_mean['lat'],
+cs = ax.pcolormesh(ds_model_mean['lon'],ds_model_mean['lat'],
                    ds_model_mean['sst'],cmap='coolwarm',transform=ccrs.PlateCarree())
 ax.coastlines()
 plt.title('Original')
 ~~~
 {: .language-python}
 
-You can see the coarse _pixelation_ clearly in the original grid.
+You can see the _pixelation_ clearly in the original grid.
 
 
 Now let's see how different our model mean is from the obs mean. 
 Remember to apply our land/ocean mask this time as we are only concerned with SST.
 
 ~~~
-diff=(model_interp-ds_obs_mean).where(ds_mask['mask']==1)
+diff = (model_interp-ds_obs_mean).where(ds_mask['mask']==1)
 diff
 ~~~
 {: .language-python}
@@ -130,7 +130,7 @@ diff
 And plot it...
 
 ~~~
-fig=plt.figure(figsize=(11,7))
+fig = plt.figure(figsize=(11,7))
 
 plt.pcolormesh(diff.lon,diff.lat,diff['sst'], cmap='summer')
 plt.colorbar()
