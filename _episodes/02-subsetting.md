@@ -27,7 +27,7 @@ This is slow, and has the potential for mistakes if we get the wrong indices. Ou
 Let's try it for a point.  We will pick a latitude and longitude in the middle of the Pacific Ocean. 
 
 ~~~
-ds_point=ds.sel(lat=[0],lon=[180],method='nearest')
+ds_point = ds.sel(lat=[0],lon=[180],method='nearest')
 ds_point
 ~~~
 {: .language-python}
@@ -48,7 +48,7 @@ This is a powerful feature, but can be confusing - always think about the scope 
 We could apply `sel` only to the `sst` DataArray instead of the entire Dataset:
 
 ~~~
-da_point=ds['sst'].sel(lat=[0],lon=[180],method='nearest')
+da_point = ds['sst'].sel(lat=[0],lon=[180],method='nearest')
 da_point
 ~~~
 {: .language-python}
@@ -102,7 +102,7 @@ A common region to look at SSTs is the Niño3.4 region.  It is defined as 5S-5N;
 Our longitudes are defined by 0 to 360 (as opposed to -180 to 180), so we need to specify our longitudes consistent with that.  To select a region we use the `sel` command with `slice`
 
 ~~~
-ds_nino34=ds['sst'].sel(lon=slice(360-170,360-120),lat=slice(-5,5))
+ds_nino34 = ds['sst'].sel(lon=slice(360-170,360-120),lat=slice(-5,5))
 ds_nino34
 ~~~
 {: .language-python}
@@ -113,7 +113,7 @@ Our data has latitudes going from North to South, but we sliced from South to No
 Let's reverse the latitudes.
 
 ~~~
-ds=ds.reindex(lat=list(reversed(ds['lat'])))
+ds = ds.reindex(lat=list(reversed(ds['lat'])))
 ~~~
 {: .language-python}
 
@@ -122,7 +122,7 @@ This line reverses the latitudes and then tells `xarray` to put them back into t
 Now we can slice our data from 5S to 5N:
 
 ~~~
-ds_nino34=ds['sst'].sel(lon=slice(360-170,360-120),lat=slice(-5,5))
+ds_nino34 = ds['sst'].sel(lon=slice(360-170,360-120),lat=slice(-5,5))
 ds_nino34
 ~~~
 {: .language-python}
@@ -147,7 +147,7 @@ See [this page](https://matplotlib.org/stable/tutorials/colors/colormaps.html) f
 Sometimes we want to get a particular time slice from our data.  Perhaps we have two datasets and we want to select the time slice that is common to both.  In this dataset, the data start in Dec 1981 and end in Apr 2020.  Suppose we want to extract the times for which we have full years (e.g, Jan 1982 to Dec 2019.  We can use the `sel` function to also select time slices. Let's select only these times for our `ds_nino34` dataset.
 
 ~~~
-ds_nino34=ds_nino34.sel(time=slice('1982-01-01','2019-12-01'))
+ds_nino34 = ds_nino34.sel(time=slice('1982-01-01','2019-12-01'))
 ds_nino34
 ~~~
 {: .language-python}
