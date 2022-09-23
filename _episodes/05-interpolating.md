@@ -145,7 +145,7 @@ plt.title('Model minus OBS')
 ~~~
 {: .language-python}
 
-![Model minus Obs]({{ page.root }}/fig/T_difference.jpg)
+![Model minus Obs](../fig/T_difference.jpg)
 
 > ## A critical eye toward your results
 >
