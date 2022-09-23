@@ -30,7 +30,7 @@ import matplotlib.pyplot as plt
  
 Today we will work with monthly Sea Surface Temperature (SST) data. 
 They are part of the [COLA Data Catalog](https://kpegion.github.io/COLA-DATASETS-CATALOG/),
-but we have temporarily placed them on the `/scratch` disk on Hopper for use in class.
+but we have temporarily placed them on Hopper for use in class.
 
 We will use the monthly global OISST version 2 dataset:
 * It is 1deg x 1deg
@@ -86,8 +86,8 @@ sst.mnmean.nc
 We can now use cut and paste to put the file and directory information into our notebook and read our dataset using `xarray`
 
 ~~~
-file='/home/pdirmeye/classes/clim680_2022/OISSTv2/monthly/sst.mnmean.nc'
-ds=xr.open_dataset(file)
+file = '/home/pdirmeye/classes/clim680_2022/OISSTv2/monthly/sst.mnmean.nc'
+ds = xr.open_dataset(file)
 ds
 ~~~
 {: .language-python}
@@ -140,7 +140,7 @@ Compare the output for the `DataArray` and the `Dataset`
 We can access individual attribues `attrs` of our `Dataset` using the following syntax:
 
 ~~~
-units=ds['sst'].attrs['units']
+units = ds['sst'].attrs['units']
 print(units)
 ~~~
 {: .language-python}
