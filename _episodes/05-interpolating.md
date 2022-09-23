@@ -1,6 +1,6 @@
 ---
 title: "Interpolating"
-teaching: 30
+teaching: 35
 exercises: 5
 questions:
 - "How do I interpolate data to a different grid?"
@@ -52,6 +52,7 @@ We can change this.
 ~~~
 ds_model['ts'] = ds_model['ts'] - 273.15
 ds_model['ts'].attrs['units'] = ds_obs['sst'].attrs['units']
+ds_model['ts']
 ~~~
 {: .language-python}
 
@@ -66,7 +67,9 @@ ds_model_mean
 ~~~
 {: .language-python}
 
-We are now going to use the `interp_like` function.  The [documentation](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.interp_like.html) tells us that this fucntion interpolates an object onto the coordinates of another object, filling out of range values with `NaN`.
+We are now going to use the `interp_like` function.  The 
+[documentation](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.interp_like.html){:target="_blank" rel="noopener"} 
+tells us that this fucntion interpolates an object onto the coordinates of another object, filling out of range values with `NaN`.
 
 One important thing to know that is not clear in the documentation is that the coordinates and variable name to interpolate must all be the same.
 
@@ -96,18 +99,6 @@ fig = plt.figure(figsize=(11,8.5))
 
 ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180.0))
 
-cs = ax.pcolormesh(model_interp['lon'],model_interp['lat'],
-                   model_interp['sst'],cmap='coolwarm',transform=ccrs.PlateCarree())
-ax.coastlines()
-plt.title('Interpolated')
-~~~
-{: .language-python}
-
-~~~
-fig = plt.figure(figsize=(11,8.5))
-
-ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180.0))
-
 cs = ax.pcolormesh(ds_model_mean['lon'],ds_model_mean['lat'],
                    ds_model_mean['sst'],cmap='coolwarm',transform=ccrs.PlateCarree())
 ax.coastlines()
@@ -115,8 +106,23 @@ plt.title('Original')
 ~~~
 {: .language-python}
 
-You can see the _pixelation_ clearly in the original grid.
+![Model minus Obs]({{ page.root }}/fig/Original.jpg)
 
+~~~
+fig = plt.figure(figsize=(11,8.5))
+
+ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=180.0))
+
+cs = ax.pcolormesh(model_interp['lon'],model_interp['lat'],
+                   model_interp['sst'],cmap='coolwarm',transform=ccrs.PlateCarree())
+ax.coastlines()
+plt.title('Interpolated')
+~~~
+{: .language-python}
+
+![Model minus Obs]({{ page.root }}/fig/Interpolated.jpg)
+
+You can clearly see the coarser _pixelation_ in the original grid, as it is lower resolution.
 
 Now let's see how different our model mean is from the obs mean. 
 Remember to apply our land/ocean mask this time as we are only concerned with SST.
@@ -130,13 +136,16 @@ diff
 And plot it...
 
 ~~~
+from matplotlib.colors import CenteredNorm
 fig = plt.figure(figsize=(11,7))
 
-plt.pcolormesh(diff.lon,diff.lat,diff['sst'], cmap='summer')
-plt.colorbar()
-plt.title('Model - OBS')
+plt.pcolormesh(diff.lon,diff.lat,diff['sst'], cmap='coolwarm', norm=CenteredNorm(0))
+plt.colorbar(label='˚C')
+plt.title('Model minus OBS')
 ~~~
 {: .language-python}
+
+![Model minus Obs]({{ page.root }}/fig/T_difference.jpg)
 
 > ## A critical eye toward your results
 >
@@ -147,14 +156,16 @@ plt.title('Model - OBS')
 >
 >> ## Solution
 >> Recall that the model variable is not actually SST but surface temperature.
->> The green areas are where sea ice is present. In the model output, this is the mean temperature of the top of the sea ice.
+>> The dark blue areas are where sea ice is present. 
+>> In the model output, this is the mean temperature of the top of the sea ice.
 >> 
 >> Look back at the map of the masked observational SST you produced in the **Masking** section of your notebook.
 >> Ocean water can get below 0˚C due to its salt content, but only a couple degrees below.
->> In the observational dataset, it is actually the ocean temperature below the ice that is reported.
+>> In the observational dataset, it is actually the ocean temperature below the ice that is reported!
 >> 
 >> Thus we are not comparing the same quantities at high latitudes. 
 >> Where there is no sea ice, this is a valid comparison.
+>> 
 >> Always be careful to consider what a result means, and why it looks the way it does!
 > {: .solution}
 {: .challenge}
