@@ -19,7 +19,7 @@ Look for the tag ![good_first_issue](https://img.shields.io/badge/-good%20first%
 
 Current maintainers of this lesson are 
 
-* Kathy Pegion
+* Luis Ortiz
 
 
 ## Authors
