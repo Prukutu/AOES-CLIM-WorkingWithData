@@ -28,20 +28,16 @@ import matplotlib.pyplot as plt
 
 ### Find our Dataset
  
-Today we will work with monthly Sea Surface Temperature (SST) data. 
-They are part of the [COLA Data Catalog](https://kpegion.github.io/COLA-DATASETS-CATALOG/),
-but we have temporarily placed them on Hopper for use in class.
-
-We will use the monthly global OISST version 2 dataset:
+Today we will work with monthly Sea Surface Temperature (SST) data. We will use the monthly global OISST version 2 dataset:
 * It is 1deg x 1deg
 * Latitudes go from 89.5N to 89.5S
 * It goes from Dec 1981 to Apr 2020
-* It is currently located in the `/home/pdirmeye/classes/clim680_2022/OISSTv2` directory
+* It is currently located in the `/home/lortizur/clim680/OISSTv2` directory
 
 Now we will take a look at the data by opening a terminal session in JupyterLab (under the "File" tab) and looking in the directory where the data are located:
 
 ~~~
-$ ls /home/pdirmeye/classes/clim680_2022/OISSTv2
+$ ls /home/lortizur/clim680/OISSTv2
 ~~~
 {: .language-bash}
 
@@ -52,7 +48,7 @@ lmask  monthly  weekly
 
 Since we are looking for monthly data, let's look in the monthly sub-directory.  Remember, you can use the `up-arrow` to avoid having to re-type:
 ~~~
-$ ls /home/pdirmeye/classes/clim680_2022/OISSTv2/monthly
+$ ls /home/lortizur/clim680/OISSTv2/monthly
 ~~~
 {: .language-bash}
 
@@ -67,7 +63,7 @@ sst.mnmean.nc
 >
 > > ## Solution
 > > ~~~
-> > ncks -M /home/pdirmeye/classes/clim680_2022/OISSTv2/monthly/sst.mnmean.nc
+> > ncks -M /home/lortizur/clim680/monthly/sst.mnmean.nc
 > > ~~~
 > > {: .language-bash}
 > > 
@@ -77,7 +73,7 @@ sst.mnmean.nc
 > > 
 > > ~~~
 > > module load nco
-> > ncks -M /home/pdirmeye/classes/clim680_2022/OISSTv2/monthly/sst.mnmean.nc
+> > ncks -M /home/lortizur/clim680/OISSTv2/monthly/sst.mnmean.nc
 > > ~~~
 > > {: .language-bash}
 > {: .solution}
@@ -86,7 +82,7 @@ sst.mnmean.nc
 We can now use cut and paste to put the file and directory information into our notebook and read our dataset using `xarray`
 
 ~~~
-file = '/home/pdirmeye/classes/clim680_2022/OISSTv2/monthly/sst.mnmean.nc'
+file = '/home/lortizur/clim680/OISSTv2/monthly/sst.mnmean.nc'
 ds = xr.open_dataset(file)
 ds
 ~~~
