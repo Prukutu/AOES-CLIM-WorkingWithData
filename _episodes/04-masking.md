@@ -34,7 +34,7 @@ Create a new markdown cell for this episode:
 Read in this dataset:
 
 ~~~
-obs_file = '/home/pdirmeye/classes/clim680_2022/OISSTv2/monthly/sst.mnmean.nc'
+obs_file = '/home/lortizur/clim680/OISSTv2/monthly/sst.mnmean.nc'
 ds_obs = xr.open_dataset(obs_file)
 ds_obs
 ~~~
@@ -51,7 +51,7 @@ plt.colorbar()
 Next let's read in a second file.
 
 ~~~
-mask_file = '/home/pdirmeye/classes/clim680_2022/OISSTv2/lmask/lsmask.nc'
+mask_file = '/home/lortizur/clim680/OISSTv2/lmask/lsmask.nc'
 ds_mask = xr.open_dataset(mask_file)
 ds_mask
 ~~~
